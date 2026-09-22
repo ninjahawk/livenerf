@@ -18,6 +18,12 @@ record = {{"argv": argv, "cwd": os.getcwd(), "env_claudecode": os.environ.get("C
           "env_effort": os.environ.get("CLAUDE_EFFORT"), "env_key": os.environ.get("ANTHROPIC_API_KEY"),
           "cwd_files": os.listdir(".")}}
 open(os.environ["FAKE_RECORD"], "w").write(json.dumps(record))
+if "FALLBACK" in prompt:
+    print(json.dumps({{"type": "result", "is_error": False, "result": "x", "num_turns": 2, "stop_reason": "end_turn",
+        "usage": {{}}, "modelUsage": {{"claude-opus-5-5": {{}}, "claude-opus-4-8": {{}}}}}})); sys.exit(0)
+if "RETRY" in prompt:
+    print(json.dumps({{"type": "result", "is_error": False, "result": "x", "num_turns": 2, "usage": {{}},
+        "modelUsage": {{"claude-opus-5-5": {{}}}}}})); sys.exit(0)
 if "FAIL" in prompt:
     print(json.dumps({{"type": "result", "is_error": True, "result": "usage limit reached"}})); sys.exit(1)
 print(json.dumps({{"type": "result", "subtype": "success", "is_error": False, "result": "<answer>" + prompt[::-1] + "</answer>",
@@ -84,3 +90,11 @@ def test_cli_version_pin(fake_cli):
     ClaudeCodeAPI("claude-opus-5-5", cli=fake_cli[0], expect_cli_version="9.9.9")
     with pytest.raises(ClaudeCodeError, match="pinned"):
         ClaudeCodeAPI("claude-opus-5-5", cli=fake_cli[0], expect_cli_version="2.1.280")
+
+
+@pytest.mark.parametrize("prompt,tag", [("FALLBACK", "[fallback]"), ("RETRY", "[retried]")])
+async def test_classifier_retries_and_fallbacks_are_never_scored(fake_cli, prompt, tag):
+    api = ClaudeCodeAPI("claude-opus-5-5", cli=fake_cli[0])
+    out, call = await api.generate(_messages(prompt), [], "none", GenerateConfig(effort="high"))
+    assert isinstance(out, ClaudeCodeError) and tag in str(out)
+    assert call.response["num_turns"] == 2  # the raw result is still logged for the refusal-rate metric
