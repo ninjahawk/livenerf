@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .venv/
+logs/
+.livenerf/
+*.egg-info/
