@@ -165,11 +165,22 @@ class ClaudeCodeAPI(ModelAPI):
 
         if proc.returncode != 0 or result.get("is_error") or "result" not in result:
             detail = result.get("result") or result.get("stderr") or result.get("unparsed_stdout") or ""
-            return ClaudeCodeError(f"claude -p failed (exit {proc.returncode}): {str(detail)[:500]}"), call
+            tag = "[refusal] " if result.get("stop_reason") == "refusal" else ""
+            return ClaudeCodeError(f"{tag}claude -p failed (exit {proc.returncode}): {str(detail)[:500]}"), call
 
         usage = result.get("usage") or {}
         model_usage = result.get("modelUsage") or {}
         served = list(model_usage) or [self.model_name]
+        # Integrity guards. A safety-classifier stop makes Claude Code retry the turn, sometimes
+        # on a fallback model (seen in pilot 2: Opus 4.8 answered for Opus 5.5). Such a sample
+        # does not measure the requested model, so it is an error with its own category, never
+        # a score. The rate of these events is reported as a secondary metric.
+        if set(served) != {self.model_name}:
+            return ClaudeCodeError(f"[fallback] served by {served}, requested {self.model_name}"), call
+        if result.get("num_turns") not in (None, 1):
+            return ClaudeCodeError(f"[retried] num_turns={result.get('num_turns')} (classifier stop and retry)"), call
+        if result.get("stop_reason") == "refusal":
+            return ClaudeCodeError("[refusal] stop_reason=refusal"), call
         output = ModelOutput.from_content(model=served[0], content=result["result"])
         output.usage = ModelUsage(
             input_tokens=usage.get("input_tokens", 0),
