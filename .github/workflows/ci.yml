@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install
+        run: uv sync --locked
+      - name: Scorer, generator, provider and analysis tests
+        run: uv run pytest -q
+      - name: Public panel is up to date
+        # regenerating the public panel must reproduce the committed files exactly;
+        # a diff here means a generator changed without a version bump
+        run: |
+          uv run python -m livenerf.export
+          git diff --exit-code data/public
