@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="380" viewBox="0 0 960 380" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
+<title id="t">Claude Opus 5.5 compared with its own launch week</title>
+<desc id="d">Daily paired difference in frozen-panel score versus the launch-week baseline, in points, with 95% confidence band. 0 post-baseline days so far.</desc>
+<rect width="960" height="380" rx="10" fill="#1a1a19"/>
+<text x="64" y="38" fill="#ffffff" font-size="20" font-weight="600">Claude Opus 5.5 vs. its own launch week</text>
+<text x="64" y="62" fill="#c3c2b7" font-size="13">Paired Δ in frozen-panel score, points per day, with 95% CI. 0 = the launch-week baseline.</text>
+<line x1="64" y1="328.0" x2="932" y2="328.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="54" y="332.0" text-anchor="end" fill="#898781" font-size="12">-10</text>
+<line x1="64" y1="269.0" x2="932" y2="269.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="54" y="273.0" text-anchor="end" fill="#898781" font-size="12">-5</text>
+<line x1="64" y1="210.0" x2="932" y2="210.0" stroke="#383835" stroke-width="1"/>
+<text x="54" y="214.0" text-anchor="end" fill="#898781" font-size="12">0</text>
+<line x1="64" y1="151.0" x2="932" y2="151.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="54" y="155.0" text-anchor="end" fill="#898781" font-size="12">+5</text>
+<line x1="64" y1="92.0" x2="932" y2="92.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="54" y="96.0" text-anchor="end" fill="#898781" font-size="12">+10</text>
+<rect x="64.0" y="92" width="46.5" height="236" fill="#2c2c2a" opacity="0.6"/>
+<text x="118.5" y="108" fill="#c3c2b7" font-size="12">launch-week baseline (72 h)</text>
+<text x="68.0" y="320" fill="#898781" font-size="11">day 0 · Sep 22</text>
+<text x="64.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Sep 22</text>
+<text x="172.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Sep 29</text>
+<text x="281.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 06</text>
+<text x="389.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 13</text>
+<text x="498.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 20</text>
+<text x="606.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 27</text>
+<text x="715.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Nov 03</text>
+<text x="823.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Nov 10</text>
+<text x="932.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Nov 17</text>
+<text x="521.2" y="196.0" text-anchor="middle" fill="#898781" font-size="14">No frozen-panel data yet. The series starts on day 0.</text>
+<text x="932" y="368" text-anchor="end" fill="#898781" font-size="11">0 samples · updated 2026-09-22 22:32 UTC</text>
+</svg>

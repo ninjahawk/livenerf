@@ -7,4 +7,6 @@ N="${1:-5}"
 export DISABLE_AUTOUPDATER=1
 # refuse to run if the CLI drifted from the pinned version (see CLAUDE_CLI_VERSION)
 PIN="$(cat CLAUDE_CLI_VERSION)"
-exec .venv/bin/python -m livenerf.schedule --n "$N" -M expect_cli_version="$PIN"
+.venv/bin/python -m livenerf.schedule --n "$N" -M expect_cli_version="$PIN"
+# refresh the README hero chart from the logs
+.venv/bin/python -m livenerf.plot
