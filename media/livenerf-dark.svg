@@ -14,18 +14,18 @@
 <text x="54" y="155.0" text-anchor="end" fill="#898781" font-size="12">+5</text>
 <line x1="64" y1="92.0" x2="932" y2="92.0" stroke="#2c2c2a" stroke-width="1"/>
 <text x="54" y="96.0" text-anchor="end" fill="#898781" font-size="12">+10</text>
-<rect x="64.0" y="92" width="155.0" height="236" fill="#2c2c2a" opacity="0.6"/>
-<text x="227.0" y="108" fill="#c3c2b7" font-size="12">launch-week baseline (10 days)</text>
-<text x="68.0" y="320" fill="#898781" font-size="11">day 0 · Sep 22</text>
-<text x="64.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Sep 22</text>
-<text x="172.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Sep 29</text>
-<text x="281.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 06</text>
-<text x="389.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 13</text>
-<text x="498.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 20</text>
-<text x="606.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 27</text>
-<text x="715.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Nov 03</text>
-<text x="823.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Nov 10</text>
-<text x="932.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Nov 17</text>
-<text x="575.5" y="196.0" text-anchor="middle" fill="#898781" font-size="14">No data yet. The series starts on day 0.</text>
-<text x="932" y="368" text-anchor="end" fill="#898781" font-size="11">0 samples · updated 2026-09-24 09:23 UTC</text>
+<rect x="78.3" y="92" width="155.0" height="236" fill="#2c2c2a" opacity="0.6"/>
+<text x="241.3" y="108" fill="#c3c2b7" font-size="12">launch-week baseline (10 days)</text>
+<text x="82.3" y="320" fill="#898781" font-size="11">day 0 · Sep 24</text>
+<text x="64.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Sep 24</text>
+<text x="172.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 01</text>
+<text x="281.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 08</text>
+<text x="389.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 15</text>
+<text x="498.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 22</text>
+<text x="606.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 29</text>
+<text x="715.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Nov 05</text>
+<text x="823.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Nov 12</text>
+<text x="932.0" y="350" text-anchor="middle" fill="#898781" font-size="12">Nov 19</text>
+<text x="575.5" y="196.0" text-anchor="middle" fill="#898781" font-size="14">Collecting the baseline. The first point lands 10 days after day 0.</text>
+<text x="932" y="368" text-anchor="end" fill="#898781" font-size="11">78 samples · updated 2026-09-24 22:20 UTC</text>
 </svg>
