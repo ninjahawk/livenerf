@@ -77,6 +77,15 @@ def eligible(h: dict) -> bool:
     return len(s) == REPEATS and 0 < sum(s) < REPEATS and h["events"] == 0
 
 
+def panel_eligible(screen: dict, conf: dict) -> bool:
+    """Eligible for the panel: eligible at the screen, and no classifier event in confirmation either.
+
+    The classifier rule applies whatever the stage (PREREGISTRATION.md, deviations log, 2026-09-24):
+    it depends on classifier policy, not on pass rates, so it is not a selection on outcomes.
+    """
+    return eligible(screen) and conf["events"] == 0
+
+
 def confirm_wanted(screen: dict, conf: dict) -> bool:
     return eligible(screen) and len(conf["scores"]) < CONFIRM_N and conf["errors"] < 2
 
