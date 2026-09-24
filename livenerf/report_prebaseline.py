@@ -67,7 +67,10 @@ def build() -> str:
         _provenance("validation", _logs(REPO_ROOT / "validation")),
         "",
         "A log from before the harness hash existed records none. Runs from the same hash used byte-identical "
-        "sample-shaping code (`livenerf.schedule.SAMPLE_SHAPING`).",
+        "sample-shaping code (`livenerf.schedule.SAMPLE_SHAPING`). The v2 screen shows several hashes because the "
+        "hash's own definition changed while it ran: it first covered every file in `livenerf/`, so edits to "
+        "analysis code changed it. `git diff 6dc86f7 -- <SAMPLE_SHAPING>` is empty, and the files edited during the "
+        "screen before that commit are all outside SAMPLE_SHAPING, so every v2 sample ran the same sample-shaping code.",
         "",
         f"## Screen: {REPEATS} samples per question",
         "",

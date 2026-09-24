@@ -204,18 +204,31 @@ Every 2-week result is published, whether it shows no change, a regression or an
 ## Recorded before baseline
 
 - **Pilots** (public synthetic panel): see `data/pilot/` and `docs/PILOT.md`.
-- **Calibration** (2026-09-23, CLI 2.1.280, effort `high`, 8,981 samples; `docs/CALIBRATION.md`):
-  75 of 2,336 candidate questions are eligible (MMLU-Pro 59 of 2,000, GPQA 12 of 198, competition
-  math 3 of 78, AIME 1 of 60).
-- **Design** (`docs/DESIGN.md` and `data/standard_panel.json`, at commit _to be filled in_): all
-  75 eligible items, 14.5 samples per item a week (6.47 an hour), a predicted 2-week MDE of 5.0
-  points, and a predicted cost of 6.3 weekly-meter points (242k output tokens per point, counting
-  the meter's lag; see `docs/CALIBRATION.md`).
-- **Instrument validation** (`docs/VALIDATION.md`, 2 fresh samples per item per effort level, 301
-  graded, 1 classifier retry):
-  - Positive control, effort medium − high: Δ = −1.3 points, SE 4.3, z = −0.31. Not detected at
-    99%. Median output tokens fell 32% (664 → 449).
-  - A/A check, high vs high: Δ = +6.7 points, SE 5.4, z = +1.22. Consistent with 0.
+- **Protocol v1** (superseded; kept as the record): 75 items, `docs/VALIDATION_v1.md`,
+  `data/validation_v1.json`.
+- **Protocol v2** (`docs/CALIBRATION.md`, generated from the logs by `livenerf.report_prebaseline`):
+  - **Screen:** 2,336 questions × 4 samples. 80 were eligible, and 2 were then excluded for
+    confirmation-stage classifier events (deviations log, 2026-09-24).
+  - **Confirmation:** the panel's mean pass rate was 54.7% at the screen and 62.0% on fresh
+    samples. That is the selection effect protocol v2 corrects for.
+  - **Design** (`docs/DESIGN.md`, `data/standard_panel.json`, locked in `data/panel.lock`,
+    commit `5287481`): 78 questions, 11.5 samples per question a week, a predicted 2-week MDE of
+    5.0 points, and 6.2 weekly-meter points a week.
+  - **Item audit** (`data/item_audit.tsv`, 80 questions, done before any validation sample): 42
+    sound, 30 ambiguous, 8 key suspect.
+  - **Instrument validation** (`docs/VALIDATION.md`, 1,248 graded samples): **PASS.**
+    - A/A check: +6.4 ± 3.6 points, z = +1.79. Consistent with 0, but close to the threshold.
+    - Output tokens, low vs high: −62% (99% CI −70% to −51%).
+    - Accuracy, effort medium − high: −4.2 ± 3.9 points.
+    - Accuracy, effort low − high: −8.3 ± 4.5 points.
+    - **Model swap, Opus 5 − Opus 5.5:** −3.8 ± 6.3 points in accuracy and −23% in tokens (99% CI
+      −46% to +8%). **Not distinguishable at 99%.** As pre-registered: this instrument can't detect
+      a same-family model swap of this size in one validation's worth of samples.
+    - *Exploratory, not pre-registered:* the A/A signal comes from the first pass of the `high`
+      arm (00:41 EDT, 51% against 63–67% on later passes, +13.7 ± 5.1 points). The other three arms,
+      run in the same half hour, show no such dip. It's either chance across the comparisons looked
+      at or a transient serving condition. Either way, it's the within-item variation over time that
+      the realized MDE (below) will measure.
 - **Baseline start** (first series run, UTC): _to be filled in_.
 
 ## Deviations log
