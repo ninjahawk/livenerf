@@ -21,6 +21,24 @@ ITEMS_PER_FAMILY = 30
 FAMILIES = ("compute", "fidelity", "instruct", "code")
 
 
+def claude_cli() -> str:
+    """The claude binary livenerf runs: $LIVENERF_CLAUDE_CLI, else a pinned copy, else `claude` on PATH.
+
+    Claude Code updates itself in place, which would break the pin. A copy of the pinned binary at
+    ~/.local/share/livenerf/claude-<version>[.exe] is out of the updater's reach.
+    """
+    if os.environ.get("LIVENERF_CLAUDE_CLI"):
+        return os.environ["LIVENERF_CLAUDE_CLI"]
+    pin_file = REPO_ROOT / "CLAUDE_CLI_VERSION"
+    if pin_file.exists():
+        pin = pin_file.read_text().strip()
+        for name in (f"claude-{pin}.exe", f"claude-{pin}"):
+            path = Path.home() / ".local" / "share" / "livenerf" / name
+            if path.exists():
+                return str(path)
+    return "claude"
+
+
 def system_prompt(version: str = "v1") -> str:
     return (PROMPTS_DIR / f"system_{version}.txt").read_text().strip()
 

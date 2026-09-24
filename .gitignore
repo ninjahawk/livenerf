@@ -4,3 +4,10 @@ __pycache__/
 logs/
 .livenerf/
 *.egg-info/
+calibration/
+calibration.out
+validation/
+validation_v1/
+confirmation/
+# pilot 3 ran locally; its logs record local paths and are withheld pending a scrub decision
+data/pilot/v3/

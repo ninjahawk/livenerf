@@ -5,16 +5,19 @@
 Each generate() call runs one hermetic, single-turn `claude -p` process:
 - the task's system prompt replaces Claude Code's (--system-prompt)
 - no tools, no MCP servers, no skills or slash commands, no session persistence
-- an empty temporary working directory, so no CLAUDE.md is discovered
+- an empty working directory with a fixed path (the path is shown to the model, so it must not
+  vary between calls), and no settings files: --setting-sources project finds none there
+- the global ~/.claude/CLAUDE.md, auto-memory and the advisor tool are switched off (HERMETIC_ENV)
 - env vars that would override model/effort/auth are removed
 The full JSON result is kept in the log as the ModelCall response.
 
 Model args (-M key=value):
-    cli=claude                path to the claude binary
+    cli=<pinned copy>         path to the claude binary (default: livenerf.common.claude_cli())
     timeout=900               seconds per call
     expect_cli_version=       fail if `claude --version` differs (pins the harness)
     allow_default_effort=false  arm B only: permit running without --effort
-    setting_sources=user      passed to --setting-sources ("" is not accepted by the CLI)
+    setting_sources=project   passed to --setting-sources ("" is not accepted by the CLI). "user"
+                              would load ~/.claude/settings.json, including its hooks
 """
 
 import asyncio
@@ -38,6 +41,8 @@ from inspect_ai.model import (
 )
 from inspect_ai.tool import ToolChoice, ToolInfo
 
+from ..common import claude_cli
+
 # Removed from the child environment: they would silently change model, effort, or billing,
 # or make the child think it is nested inside another Claude Code session.
 SCRUB_ENV = {
@@ -54,10 +59,47 @@ SCRUB_ENV = {
     "CLAUDE_CODE_SUBAGENT_MODEL",
     "ANTHROPIC_API_KEY",  # the Max-plan series must never silently switch to API billing
 }
+# Any other inherited CLAUDE_CODE_* var is also dropped (session ids, messaging sockets and
+# feature flags from a parent session), except the ones that only carry a login.
+KEEP_CLAUDE_CODE_ENV = {"CLAUDE_CODE_OAUTH_TOKEN", "CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR"}
+
+# Set in the child. Without these, `claude -p` still injects the user's global ~/.claude/CLAUDE.md
+# (--setting-sources does not cover it) and attaches a server-side advisor tool, even with
+# --tools "". Measured on the series machine (CLI 2.1.280): 11.2k context tokens per call with
+# them unset, 0.55k with them set, which matches the remote pilots.
+HERMETIC_ENV = {
+    "DISABLE_AUTOUPDATER": "1",
+    "CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1",
+    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
+    "CLAUDE_CODE_DISABLE_ADVISOR_TOOL": "1",
+}
+
+
+# Context-size guard. A hermetic call's context is the system prompt + the item + a fixed harness
+# overhead (an environment block, measured at ~0.5k tokens on CLI 2.1.280). Anything much larger
+# means something was injected (a CLAUDE.md, memory, tool definitions), and the sample would not
+# measure what it claims to, so it is rejected as a [context] error. The item itself is bounded by
+# one token per character: prose is ~4 characters a token, but sequence data (GPQA has DNA and
+# protein sequences) tokenizes at close to 1, so anything tighter rejects real items.
+CONTEXT_OVERHEAD_LIMIT = 2500
+
+
+def context_limit(system: str, prompt: str) -> int:
+    return len(system) + len(prompt) + CONTEXT_OVERHEAD_LIMIT
 
 
 class ClaudeCodeError(RuntimeError):
     pass
+
+
+def _empty_cwd() -> str:
+    """The working directory for every call. Claude Code shows it to the model in an environment
+    block, so a random temp name per call would put noise in the input; this path never changes."""
+    path = os.path.join(tempfile.gettempdir(), "livenerf-cwd")
+    os.makedirs(path, exist_ok=True)
+    if os.listdir(path):
+        raise ClaudeCodeError(f"{path} is not empty; something wrote into the hermetic working directory")
+    return path
 
 
 def _text(message: ChatMessage) -> str:
@@ -72,15 +114,16 @@ class ClaudeCodeAPI(ModelAPI):
         api_key: str | None = None,
         api_key_vars: list[str] = [],
         config: GenerateConfig = GenerateConfig(),
-        cli: str = "claude",
+        cli: str | None = None,
         timeout: int = 900,
         expect_cli_version: str | None = None,
         allow_default_effort: bool | str = False,
-        setting_sources: str = "user",
+        setting_sources: str = "project",
         keep_api_key: bool | str = False,
         **model_args: Any,
     ) -> None:
         super().__init__(model_name, base_url, api_key, api_key_vars, config)
+        cli = cli or claude_cli()
         self.cli = shutil.which(cli) or cli
         self.timeout = int(timeout)
         self.allow_default_effort = str(allow_default_effort).lower() == "true"
@@ -102,8 +145,15 @@ class ClaudeCodeAPI(ModelAPI):
         return False  # never hammer a usage cap; errored samples are logged and reported separately
 
     def _env(self) -> dict[str, str]:
-        env = {k: v for k, v in os.environ.items() if k not in SCRUB_ENV or (k == "ANTHROPIC_API_KEY" and self.keep_api_key)}
-        env["DISABLE_AUTOUPDATER"] = "1"
+        def keep(k: str) -> bool:
+            if k == "ANTHROPIC_API_KEY":
+                return self.keep_api_key
+            if k.startswith("CLAUDE_CODE_"):
+                return k in KEEP_CLAUDE_CODE_ENV
+            return k not in SCRUB_ENV
+
+        env = {k: v for k, v in os.environ.items() if keep(k)}
+        env.update(HERMETIC_ENV)
         return env
 
     def _command(self, system: str, config: GenerateConfig) -> list[str]:
@@ -142,18 +192,18 @@ class ClaudeCodeAPI(ModelAPI):
         request = {"argv": cmd[:6] + ["--system-prompt", "<system>"] + cmd[8:], "system": system, "prompt": prompt, "cli_version": self.cli_version}
 
         start = time.monotonic()
-        with tempfile.TemporaryDirectory(prefix="livenerf-") as cwd:
-            proc = await asyncio.create_subprocess_exec(
-                *cmd, cwd=cwd, env=self._env(),
-                stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
-            )
-            try:
-                stdout, stderr = await asyncio.wait_for(proc.communicate(prompt.encode()), self.timeout)
-            except asyncio.TimeoutError:
-                proc.kill()
-                await proc.wait()
-                call = ModelCall.create(request=request, response={"error": "timeout"}, time=time.monotonic() - start)
-                return ClaudeCodeError(f"claude -p timed out after {self.timeout}s"), call
+        cwd = _empty_cwd()
+        proc = await asyncio.create_subprocess_exec(
+            *cmd, cwd=cwd, env=self._env(),
+            stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+        )
+        try:
+            stdout, stderr = await asyncio.wait_for(proc.communicate(prompt.encode()), self.timeout)
+        except asyncio.TimeoutError:
+            proc.kill()
+            await proc.wait()
+            call = ModelCall.create(request=request, response={"error": "timeout"}, time=time.monotonic() - start)
+            return ClaudeCodeError(f"claude -p timed out after {self.timeout}s"), call
         elapsed = time.monotonic() - start
 
         raw = stdout.decode(errors="replace")
@@ -181,6 +231,10 @@ class ClaudeCodeAPI(ModelAPI):
             return ClaudeCodeError(f"[retried] num_turns={result.get('num_turns')} (classifier stop and retry)"), call
         if result.get("stop_reason") == "refusal":
             return ClaudeCodeError("[refusal] stop_reason=refusal"), call
+        context = sum(usage.get(k) or 0 for k in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"))
+        if context > context_limit(system, prompt):
+            return ClaudeCodeError(f"[context] {context} context tokens, limit {context_limit(system, prompt)}: "
+                                   "something beyond the prompt was loaded"), call
         output = ModelOutput.from_content(model=served[0], content=result["result"])
         output.usage = ModelUsage(
             input_tokens=usage.get("input_tokens", 0),

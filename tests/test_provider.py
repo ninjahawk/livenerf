@@ -16,7 +16,9 @@ prompt = sys.stdin.read()
 argv = sys.argv[1:]
 record = {{"argv": argv, "cwd": os.getcwd(), "env_claudecode": os.environ.get("CLAUDECODE"),
           "env_effort": os.environ.get("CLAUDE_EFFORT"), "env_key": os.environ.get("ANTHROPIC_API_KEY"),
-          "cwd_files": os.listdir(".")}}
+          "cwd_files": os.listdir("."), "env_session": os.environ.get("CLAUDE_CODE_SESSION_ID"),
+          "env_no_mds": os.environ.get("CLAUDE_CODE_DISABLE_CLAUDE_MDS"),
+          "env_no_advisor": os.environ.get("CLAUDE_CODE_DISABLE_ADVISOR_TOOL")}}
 open(os.environ["FAKE_RECORD"], "w").write(json.dumps(record))
 if "FALLBACK" in prompt:
     print(json.dumps({{"type": "result", "is_error": False, "result": "x", "num_turns": 2, "stop_reason": "end_turn",
@@ -24,6 +26,9 @@ if "FALLBACK" in prompt:
 if "RETRY" in prompt:
     print(json.dumps({{"type": "result", "is_error": False, "result": "x", "num_turns": 2, "usage": {{}},
         "modelUsage": {{"claude-opus-5-5": {{}}}}}})); sys.exit(0)
+if "BLOAT" in prompt:
+    print(json.dumps({{"type": "result", "is_error": False, "result": "x", "num_turns": 1,
+        "usage": {{"input_tokens": 2, "cache_creation_input_tokens": 11000}}, "modelUsage": {{"claude-opus-5-5": {{}}}}}})); sys.exit(0)
 if "FAIL" in prompt:
     print(json.dumps({{"type": "result", "is_error": True, "result": "usage limit reached"}})); sys.exit(1)
 print(json.dumps({{"type": "result", "subtype": "success", "is_error": False, "result": "<answer>" + prompt[::-1] + "</answer>",
@@ -37,11 +42,16 @@ def fake_cli(tmp_path, monkeypatch):
     path = tmp_path / "claude"
     path.write_text(FAKE.format(python=sys.executable))
     path.chmod(path.stat().st_mode | stat.S_IEXEC)
+    if os.name == "nt":  # no shebangs on Windows: wrap the script in a .cmd launcher
+        wrapper = tmp_path / "claude.cmd"
+        wrapper.write_text(f'@"{sys.executable}" "{path}" %*\n')
+        path = wrapper
     record = tmp_path / "record.json"
     monkeypatch.setenv("FAKE_RECORD", str(record))
     monkeypatch.setenv("CLAUDECODE", "1")
     monkeypatch.setenv("CLAUDE_EFFORT", "low")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-should-not-leak")
+    monkeypatch.setenv("CLAUDE_CODE_SESSION_ID", "parent-session")
     return str(path), record
 
 
@@ -67,6 +77,9 @@ async def test_hermetic_call_and_parsing(fake_cli):
     assert "--strict-mcp-config" in argv and "--no-session-persistence" in argv
     assert rec["env_claudecode"] is None and rec["env_effort"] is None and rec["env_key"] is None
     assert rec["cwd_files"] == [] and "livenerf-" in rec["cwd"]
+    assert argv[argv.index("--setting-sources") + 1] == "project"  # "user" would load hooks
+    assert rec["env_session"] is None  # no parent-session vars leak into the child
+    assert rec["env_no_mds"] == "1" and rec["env_no_advisor"] == "1"
     assert call.response["session_id"] == "s1"
 
 
@@ -98,3 +111,9 @@ async def test_classifier_retries_and_fallbacks_are_never_scored(fake_cli, promp
     out, call = await api.generate(_messages(prompt), [], "none", GenerateConfig(effort="high"))
     assert isinstance(out, ClaudeCodeError) and tag in str(out)
     assert call.response["num_turns"] == 2  # the raw result is still logged for the refusal-rate metric
+
+
+async def test_injected_context_is_rejected(fake_cli):
+    api = ClaudeCodeAPI("claude-opus-5-5", cli=fake_cli[0])
+    out, call = await api.generate(_messages("BLOAT"), [], "none", GenerateConfig(effort="high"))
+    assert isinstance(out, ClaudeCodeError) and "[context]" in str(out)
