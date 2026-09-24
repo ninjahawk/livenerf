@@ -35,8 +35,10 @@ def checks(probe: bool) -> list[tuple[str, bool, str]]:
     panel = json.loads(panel_path.read_text()) if panel_path.exists() else {}
     k = sum(len(f.get("ids", [])) for f in panel.get("families", {}).values())
     rates = panel.get("rates_per_hour", {})
-    out.append(("primary panel designed", k >= 10 and rates.get("standard", 0) > 0,
-                f"{k} items, rates {rates}" if panel else "run `python -m livenerf.design --write`"))
+    sched = panel.get("schedule", {})
+    daily = sched.get("mode") == "daily"
+    out.append(("primary panel designed", k >= 10 and (daily or rates.get("standard", 0) > 0),
+                f"{k} items, schedule {sched or rates}" if panel else "run `python -m livenerf.design ... --write`"))
 
     val_path = REPO_ROOT / "data" / "validation.json"
     val = json.loads(val_path.read_text()) if val_path.exists() else {}
@@ -60,9 +62,11 @@ def checks(probe: bool) -> list[tuple[str, bool, str]]:
 
     prereg = (REPO_ROOT / "PREREGISTRATION.md").read_text(encoding="utf-8")
     committed = re.search(r"sha256\(secret\) = `?([0-9a-f]{64})", prereg)
-    out.append(("secret commitment in PREREGISTRATION.md", bool(committed),
-                committed.group(1)[:16] + "..." if committed else "run `python -m livenerf.secret commit`"))
-    if committed:
+    # the secret only freezes the synthetic panel; the daily schedule has no synthetic arm
+    if not daily:
+        out.append(("secret commitment in PREREGISTRATION.md", bool(committed),
+                    committed.group(1)[:16] + "..." if committed else "run `python -m livenerf.secret commit`"))
+    if committed and not daily:
         try:
             from .common import load_secret, sha256
 

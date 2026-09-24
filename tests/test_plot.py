@@ -44,3 +44,11 @@ def test_prebaseline_charts_render():
         assert y.startswith("<svg") and "6 of 110 questions can show a change" in y and "stroke-dasharray" in y
         c = render_control(ctrl, theme)
         assert c.startswith("<svg") and "-2.0" in c and "-25%" in c and c.count("<circle") == 4
+
+
+def test_plot_survives_a_log_dir_with_no_eval_logs(tmp_path):
+    from livenerf.plot import _points
+
+    (tmp_path / "daily.jsonl").write_text("")
+    pts, _, n = _points(str(tmp_path))
+    assert pts == [] and n == 0

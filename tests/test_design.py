@@ -60,3 +60,16 @@ def test_panel_lock_detects_any_change(tmp_path, monkeypatch):
     assert design.lock_ok()[0]
     panel.write_text('{"families": {"gpqa": {}}}')
     assert not design.lock_ok()[0]
+
+
+def test_daily_runs_once_per_utc_day(tmp_path, monkeypatch):
+    from datetime import datetime, timezone
+
+    from livenerf import daily
+
+    monkeypatch.setattr(daily, "LOG", tmp_path / "daily.jsonl")
+    assert not daily.ran_today()
+    daily.record({"status": "skipped", "reason": "usage above cap"})
+    assert not daily.ran_today()  # a skipped attempt retries at the next hour
+    daily.record({"status": "ran", "day": datetime.now(timezone.utc).date().isoformat()})
+    assert daily.ran_today()

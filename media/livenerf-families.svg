@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="314" viewBox="0 0 960 314" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="ft fd">
+<title id="ft">Each benchmark compared with its own launch week</title>
+<desc id="fd">One panel per benchmark: daily paired difference in score versus the launch-week baseline, in points, with a 95% confidence band, and the change in median output tokens.</desc>
+<rect width="960" height="314" rx="10" fill="#fcfcfb"/>
+<text x="40" y="38" fill="#0b0b0b" font-size="20" font-weight="600">Each benchmark vs. its own launch week</text>
+<text x="40" y="62" fill="#52514e" font-size="13">Paired Δ in points per day with 95% CI; tokens = change in median output tokens (a drop can mean less thinking).</text>
+<text x="480.0" y="144" text-anchor="middle" fill="#898781" font-size="14">No data yet.</text>
+</svg>

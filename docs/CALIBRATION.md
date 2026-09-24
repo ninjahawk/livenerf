@@ -51,7 +51,7 @@ The meter conversion: 3,592,437 tokens over 16 weekly-meter points (4 of them re
 
 ## Design
 
-From `data/standard_panel.json` (protocol v2; details in `docs/DESIGN.md`): **78 questions**, 11.5 samples per question a week, a predicted 2-week MDE of **4.95 points**, and 6.23 weekly-meter points a week. Locked: `data/panel.lock` = `3bc084074f6e04c8…`.
+From `data/standard_panel.json` (protocol v2; details in `docs/DESIGN.md`): **78 questions**, 7.0 samples per question a week, a predicted 2-week MDE of **7.51 points**, and 3.58 weekly-meter points a week. Locked: `data/panel.lock` = `487c65e15230286e…`.
 
 ## Instrument validation
 
