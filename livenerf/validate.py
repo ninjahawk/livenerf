@@ -92,8 +92,10 @@ def run(reps: int, weekly_points: float, five_hour_cap: float) -> None:
         def need(i, a):
             return done[(i, a)] < reps and errs[(i, a)] < MAX_ERRORS
 
-        # the next items that still need samples; every arm that needs one runs in the same chunk, interleaved
-        todo = [i for i in ids if any(need(i, a) for a in ARMS)][:CHUNK // 2]
+        # one pass adds one sample per (item, arm) still short, for every item at once: large evals keep the
+        # connections busy. The arm order rotates each pass so no arm always runs first or last.
+        todo = [i for i in ids if any(need(i, a) for a in ARMS)]
+        rounds = min(done[(i, a)] for i in ids for a in ARMS)
         if not todo:
             print("validation samples complete")
             return
@@ -101,13 +103,14 @@ def run(reps: int, weekly_points: float, five_hour_cap: float) -> None:
         if now is None or now["weekly"] - start["weekly"] >= weekly_points or now["five_hour"] >= five_hour_cap:
             print(f"stopping on budget or meter ({now}); rerun to continue")
             return
-        print(f"running {', '.join(todo)}", flush=True)
-        for model in (MEASURED, SWAP):
-            arms = [a for a, (m, _) in ARMS.items() if m == model]
-            # one eval per (family, arm) that still needs samples, so no arm is oversampled
-            jobs = [(f, a, [i for i in todo if i.split("-", 1)[0] == f and need(i, a)])
-                    for f in sorted({i.split("-", 1)[0] for i in todo}) for a in arms]
-            for f, a, ids_fa in [j for j in jobs if j[2]]:
+        order = list(ARMS)[rounds % len(ARMS):] + list(ARMS)[:rounds % len(ARMS)]
+        print(f"pass {rounds + 1}: {len(todo)} items, arms in order {', '.join(order)}", flush=True)
+        for a in order:
+            model = ARMS[a][0]
+            # one eval per (family, arm), holding only the items that arm still needs, so no arm is oversampled
+            jobs = [(f, [i for i in todo if i.split("-", 1)[0] == f and need(i, a)])
+                    for f in sorted({i.split("-", 1)[0] for i in todo})]
+            for f, ids_fa in [j for j in jobs if j[1]]:
                 inspect_eval(
                     getattr(tasks, f)(panel="daily", effort=ARMS[a][1]),
                     model=model, model_args={"expect_cli_version": pin},
