@@ -40,7 +40,9 @@ def checks(probe: bool) -> list[tuple[str, bool, str]]:
 
     val_path = REPO_ROOT / "data" / "validation.json"
     val = json.loads(val_path.read_text()) if val_path.exists() else {}
-    if val.get("protocol") == "v2":
+    if val.get("protocol") == "v2" and not val.get("complete"):
+        out.append(("instrument validated (protocol v2)", False, "validation samples incomplete; finish `validate run`"))
+    elif val.get("protocol") == "v2":
         aa, low = val["aa_check"], val["positive_control"]["low"]
         out.append(("A/A check consistent with 0", abs(aa["z"]) < 1.96, f"z = {aa['z']:+.2f}"))
         out.append(("positive control: tokens detect effort low", abs(low["tokens"]["z"]) > 2.576,
