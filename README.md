@@ -17,7 +17,7 @@
   <!-- Regenerated from the .eval logs by `python -m livenerf.plot` (the daily run redraws it) -->
   <source media="(prefers-color-scheme: dark)" srcset="media/livenerf-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="media/livenerf.svg" />
-  <img alt="Daily paired difference in frozen-panel score versus the launch-week baseline" src="media/livenerf.svg" width="100%" />
+  <img alt="Daily score on the frozen panel, with the baseline window and its mean" src="media/livenerf.svg" width="100%" />
 </picture>
 
 </div>
