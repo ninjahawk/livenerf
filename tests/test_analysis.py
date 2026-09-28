@@ -102,3 +102,14 @@ def test_decision_requires_the_same_harness():
             for i, (d, h) in enumerate([(math.nan, "aaa"), (-0.05, "aaa"), (-0.05, "aaa"), (-0.05, "bbb")])]
     out = decision(pd.DataFrame(rows))
     assert out[1]["change_declared"] and not out[2]["qualifies"]
+
+
+def test_a_family_series_model_is_never_the_control_arm():
+    import pandas as pd
+
+    from livenerf.analysis import control, primary
+
+    df = pd.DataFrame({"model": ["claudecode/claude-opus-5-5", "claudecode/claude-sonnet-5-5", "claudecode/claude-opus-5"],
+                       "family": ["gpqa"] * 3})
+    assert list(control(df)["model"]) == ["claudecode/claude-opus-5"]
+    assert list(primary(df, "claudecode/claude-sonnet-5-5")["model"]) == ["claudecode/claude-sonnet-5-5"]

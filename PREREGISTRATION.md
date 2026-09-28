@@ -325,3 +325,39 @@ Every 10-day result is published, whether it shows no change, a regression or an
   today's run, so it ran by hand with `--weekly-cap 99` (5-hour cap unchanged). Panel, prompts,
   graders, harness and CLI pin are unchanged. The guard protects budget, not samples. The run is
   reported like any other, and its error rate is checked against the 5% rule.
+
+- **2026-09-28**, during the baseline (after day 5), before any post-baseline data. **Two exploratory
+  secondary analyses, and a family series.** Nothing here changes the panel, prompts, graders,
+  harness hash (`461391b6fce64167`, checked), CLI pin, schedule or decision rule of this series. No
+  series data was looked at to design them: they were built on the committed validation summary
+  and panel pass rates, and tested by simulation (`docs/INDEX.md`, `python -m livenerf.index
+  --simulate --write`).
+  - **Secondary analysis 9, the drift index** (`livenerf.index`). Per 10-day window:
+    - Δθ, the paired accuracy Δ on the logit scale (Δacc divided by the panel's mean p(1−p));
+    - Δℓ, the mean per-item log token ratio;
+    - the split Δθ = b·Δℓ + ρ, where b is the exchange rate between thinking and ability.
+
+    b is measured from the validation's effort arms (low and medium against high), per item with an
+    item bootstrap (`livenerf.index.exchange_rate`). It's never estimated from series data. Its
+    value from the validation logs is appended to this log before day 11's data exists, and it is
+    then fixed. ρ, with an item-clustered SE, is reported as the ability change at a fixed amount of
+    thinking. It is reported with the same two-window, 99% structure as the primary statistic, and
+    it is never used for the decision.
+  - **Secondary analysis 10, day-level variance.** Every question in a day's run shares that day's
+    serving conditions, and item-clustered SEs don't see a shock that moves every item on the same
+    day. The between-day variance beyond sampling noise is estimated from the baseline days for
+    accuracy, log tokens and ρ. Each window's result is also reported with a day-aware SE,
+    SE² + s_day²·(1/10 + 1/10). The decision rule is unchanged. If the day-aware SE would reverse a
+    window's verdict, that is reported next to the result.
+  - **Family series.** Claude Sonnet 5.5 (released 2026-09-28) gets its own series on the same
+    frozen panel, under its own pre-registration (`series/sonnet-5-5/PREREGISTRATION.md`, committed
+    before its first run). Its effect on this series:
+    - it runs only after this series' daily run is in;
+    - it writes only to `series/sonnet-5-5/logs/` (outside `logs/`, which is read recursively);
+    - it has a stricter budget guard (weekly 65%, 5-hour 50%), so its usage can't block this series'
+      75% and 60% guard on a normal day.
+
+    Its usage does count against the same weekly meter, and any day this series loses to the guard
+    is reported as before. `livenerf.analysis.control` now names `claude-opus-5` explicitly instead
+    of "any model other than Opus 5.5". Analysis code only; the result is unchanged on this series'
+    logs.

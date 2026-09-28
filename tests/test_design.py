@@ -73,3 +73,69 @@ def test_daily_runs_once_per_utc_day(tmp_path, monkeypatch):
     assert not daily.ran_today()  # a skipped attempt retries at the next hour
     daily.record({"status": "ran", "day": datetime.now(timezone.utc).date().isoformat()})
     assert daily.ran_today()
+
+
+def test_family_series_keep_their_own_attempt_log(tmp_path, monkeypatch):
+    """A family series' "ran" line never counts as today's Opus 5.5 run, and the reverse."""
+    from datetime import datetime, timezone
+
+    from livenerf import daily
+
+    monkeypatch.setattr(daily, "LOG", tmp_path / "logs" / "daily.jsonl")
+    monkeypatch.setattr(daily, "REPO_ROOT", tmp_path)
+    series_log = daily.series_dir("sonnet-5-5") / "logs" / "daily.jsonl"
+    assert str(series_log).startswith(str(tmp_path / "series"))
+    today = datetime.now(timezone.utc).date().isoformat()
+    daily.record({"status": "ran", "series": "sonnet-5-5", "day": today}, series_log)
+    assert daily.ran_today(series_log) and not daily.ran_today()
+    daily.record({"status": "ran", "day": today})
+    assert daily.ran_today()
+
+
+def test_family_series_logs_stay_out_of_the_opus_analysis():
+    """Series logs live outside logs/ (which is read recursively) and are gitignored."""
+    from livenerf import daily
+    from livenerf.common import REPO_ROOT
+
+    for slug in daily.SERIES:
+        assert (REPO_ROOT / "logs") not in (daily.series_dir(slug) / "logs").parents
+    assert "series/*/logs/" in (REPO_ROOT / ".gitignore").read_text()
+
+
+def test_a_broken_family_series_stops_after_two_failures(tmp_path, monkeypatch):
+    from datetime import datetime, timezone
+    from types import SimpleNamespace
+
+    from livenerf import daily
+
+    monkeypatch.setattr(daily, "REPO_ROOT", tmp_path)
+    (tmp_path / "series" / "sonnet-5-5").mkdir(parents=True)
+    (tmp_path / "series" / "sonnet-5-5" / "PREREGISTRATION.md").write_text("x")
+    monkeypatch.setattr(daily, "meters", lambda: {"weekly": 10.0, "five_hour": 5.0})
+    calls = []
+
+    def broken(slug, pin):
+        calls.append(slug)
+        raise RuntimeError("model not served")
+
+    monkeypatch.setattr(daily, "run_series", broken)
+    args = SimpleNamespace(series_weekly_cap=65, series_five_hour_cap=50, dry_run=False)
+    for _ in range(5):  # the task fires hourly
+        daily.family("2.1.280", args)
+    log = daily.series_dir("sonnet-5-5") / "logs" / "daily.jsonl"
+    assert len(calls) == 2 and daily.failed_today(log) == 2 and not daily.ran_today(log)
+    assert datetime.now(timezone.utc).date().isoformat() in log.read_text()
+
+
+def test_family_series_gives_way_on_a_tight_budget(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    from livenerf import daily
+
+    monkeypatch.setattr(daily, "REPO_ROOT", tmp_path)
+    (tmp_path / "series" / "sonnet-5-5").mkdir(parents=True)
+    (tmp_path / "series" / "sonnet-5-5" / "PREREGISTRATION.md").write_text("x")
+    monkeypatch.setattr(daily, "meters", lambda: {"weekly": 70.0, "five_hour": 5.0})  # under Opus's 75, over 65
+    monkeypatch.setattr(daily, "run_series", lambda *a: (_ for _ in ()).throw(AssertionError("must not run")))
+    daily.family("2.1.280", SimpleNamespace(series_weekly_cap=65, series_five_hour_cap=50, dry_run=False))
+    assert "usage above series cap" in (daily.series_dir("sonnet-5-5") / "logs" / "daily.jsonl").read_text()
