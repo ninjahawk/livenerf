@@ -295,4 +295,4 @@ If you find livenerf helpful in your research cite simply as:
 
 ## License
 
-Not yet chosen.
+MIT
