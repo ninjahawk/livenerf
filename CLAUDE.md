@@ -9,6 +9,10 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
 - **The series is running.** Day 1 was 2026-09-24 22:10 UTC. It runs for 30 days, to about 2026-10-24.
   - Days 1–10 are the baseline. Days 11–20 and 21–30 are the two decision windows.
   - The earliest possible call under the decision rule is day 30.
+- **Progress (2026-10-02):** days 1–9 are in, none missed, every one at 90 samples on hash
+  `461391b6fce64167`. Day 5 ran with the budget guard overridden once (deviations log, 2026-09-28).
+  **Next milestone:** day 10 (2026-10-03 UTC). The baseline ends 2026-10-04 22:10 UTC; then append the
+  realized MDE to PREREGISTRATION.md "Power" before any post-baseline comparison is looked at.
 - **Daily run:** the Windows task `livenerf daily` fires at 05:07 local time and retries every hour
   until 23:07, until the day's run is in (`logs/daily.jsonl`, `status: ran`). A day with the PC off
   all day is lost. A day with the PC on and logged in at any point from 05:07 to 23:07 catches up.
@@ -82,6 +86,15 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
 - `git filter-branch`, or any rewrite that untracks files, deletes them from disk. Back up first.
 - Bash heredocs with apostrophes in Python patch scripts break. Write the patch to a file.
 - Windows consoles are cp1252: CLIs call `sys.stdout.reconfigure(encoding="utf-8")`.
+- `livenerf.daily --dry-run` prints nothing once today's run is in: the "already ran" check comes first
+  and exits quietly. Silence means done, not broken; check `logs/daily.jsonl`.
+- The budget guard (weekly ≥ 75% or 5-hour ≥ 60% → skip) is shared with all other Claude use on the
+  account. Outside use has pushed the weekly meter to 93–99% (days 5–6) and +22 points in a day (day 9).
+  If the weekly reset falls after the UTC day ends, the day is lost unless the guard is overridden, and
+  an override needs a deviations-log entry *before* the run (`--weekly-cap 99`, as on 2026-09-28).
+- "usage meter unavailable" right after boot is transient; the next hourly attempt catches up.
+- The series day is the UTC day. The task's local-evening attempts (20:07–23:07 EDT) already count
+  for the next UTC day.
 - `data/pilot/v3/` (the local pilot 3 logs) is gitignored, because its raw logs contain local file
   paths. Publishing it is the owner's decision, still open.
 
