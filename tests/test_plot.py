@@ -4,15 +4,22 @@ from livenerf.plot import DAY0, render
 
 
 def test_empty_frame_renders_without_points():
-    svg = render([], DAY0, 0, "light")
+    svg = render([], None, DAY0, 0, "light")
     assert svg.startswith("<svg") and "No data yet" in svg and "<circle" not in svg
 
 
 def test_points_render_in_both_themes():
-    pts = [(DAY0 + timedelta(days=4 + i), 0.5 * i, 1.0) for i in range(5)]
+    # (day, score in points, SE in points); one point per day, the last one labelled
+    pts = [(DAY0 + timedelta(days=2 + i), 55.0 + i, 5.0) for i in range(5)]
     for theme in ("light", "dark"):
-        svg = render(pts, DAY0, 500, theme)
-        assert svg.count("<circle") == 1 and "+2.0" in svg
+        svg = render(pts, None, DAY0, 390, theme)
+        assert svg.count("<circle") == 5 and "59.0%" in svg and "Collecting the baseline: day 5" in svg
+
+
+def test_baseline_mean_draws_a_dashed_reference():
+    pts = [(DAY0 + timedelta(days=2 + i), 60.0, 5.0) for i in range(11)]
+    svg = render(pts, 60.0, DAY0, 858, "light")
+    assert "stroke-dasharray" in svg and "Collecting the baseline" not in svg
 
 
 def test_family_panels_render():
@@ -50,5 +57,5 @@ def test_plot_survives_a_log_dir_with_no_eval_logs(tmp_path):
     from livenerf.plot import _points
 
     (tmp_path / "daily.jsonl").write_text("")
-    pts, _, n = _points(str(tmp_path))
-    assert pts == [] and n == 0
+    pts, base_mean, _, n = _points(str(tmp_path))
+    assert pts == [] and base_mean is None and n == 0

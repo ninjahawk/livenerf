@@ -4,12 +4,15 @@
 
 *A long-running, deterministic-as-possible benchmark for detecting whether a frontier model gets quietly worse after launch.*
 
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Model](https://img.shields.io/badge/Model-Claude_Opus_5.5-d97757)](https://www.anthropic.com/claude)
-[![Framework](https://img.shields.io/badge/Framework-Inspect_AI-6cb8e0)](https://inspect.aisi.org.uk/)
-[![Harness](https://img.shields.io/badge/Harness-Claude_Code_headless-8a8a8a)](https://code.claude.com/docs/en/headless)
-[![Baseline](https://img.shields.io/badge/Day_0-2026--09--22-e8a13c)](#results)
-[![Status](https://img.shields.io/badge/Status-series_running_(day_10_of_30)-2ea44f)](#status)
+<p align="center">
+  <a href="https://github.com/ninjahawk/livenerf/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ninjahawk/livenerf/ci.yml?branch=main&style=flat-square&label=ci" alt="CI status"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.11+-3776AB?style=flat-square" alt="Python 3.11+"></a>
+  <a href="https://www.anthropic.com/claude"><img src="https://img.shields.io/badge/model-Claude_Opus_5.5-d97757?style=flat-square" alt="Model: Claude Opus 5.5"></a>
+  <a href="#results"><img src="https://img.shields.io/badge/day_0-2026--09--22-e8a13c?style=flat-square" alt="Day 0: 2026-09-22"></a>
+  <a href="#status"><img src="https://img.shields.io/badge/status-day_10_of_30-2ea44f?style=flat-square" alt="Status: day 10 of 30"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License: MIT"></a>
+  <a href="https://discord.gg/JRGCUg2pyX"><img src="https://img.shields.io/badge/discord-join-5865F2?logo=discord&logoColor=white&style=flat-square" alt="Discord"></a>
+</p>
 
 **[📋 The plan](PLAN.md)** · **[📊 Results](#results)** · **[🔬 How it works](#how-it-works)** · **[🧪 Pre-registration](#pre-registration)** · **[💬 Discord](https://discord.gg/JRGCUg2pyX)**
 
@@ -295,4 +298,4 @@ If you find livenerf helpful in your research cite simply as:
 
 ## License
 
-MIT
+[MIT](LICENSE)
