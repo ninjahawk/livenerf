@@ -14,7 +14,7 @@
   <a href="https://discord.gg/JRGCUg2pyX"><img src="https://img.shields.io/badge/discord-join-5865F2?logo=discord&logoColor=white&style=flat-square" alt="Discord"></a>
 </p>
 
-**[📋 The plan](PLAN.md)** · **[📊 Results](#results)** · **[🔬 How it works](#how-it-works)** · **[🧪 Pre-registration](#pre-registration)** · **[💬 Discord](https://discord.gg/JRGCUg2pyX)**
+[The plan](PLAN.md) · [Results](#results) · [How it works](#how-it-works) · [Pre-registration](#pre-registration) · [Discord](https://discord.gg/JRGCUg2pyX)
 
 <picture>
   <!-- Regenerated from the .eval logs by `python -m livenerf.plot` (the daily run redraws it) -->
