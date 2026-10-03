@@ -113,7 +113,9 @@ def render(pts, base_mean, start: datetime, n_samples: int, theme: str) -> str:
         o.append(f'<text x="{x(d) + 10:.1f}" y="{y(v) - 8:.1f}" fill="{c["ink"]}" font-size="13" font-weight="600">{v:.1f}%</text>')
         if base_mean is None:
             o.append(f'<text x="{(bx1 + w - pr) / 2:.1f}" y="{pt + ph / 2:.1f}" text-anchor="middle" fill="{c["muted"]}" font-size="14">'
-                     f"Collecting the baseline: day {len(pts)} of {BASELINE_HOURS // 24}.</text>")
+                     f"Collecting the baseline: {len(pts)} days so far, the window closes "
+                     f"{(start + timedelta(hours=BASELINE_HOURS)):%b} {(start + timedelta(hours=BASELINE_HOURS)).day}, "
+                     f"{(start + timedelta(hours=BASELINE_HOURS)):%H:%M} UTC.</text>")
     else:
         o.append(f'<text x="{pl + pw / 2:.1f}" y="{pt + ph / 2:.1f}" text-anchor="middle" '
                  f'fill="{c["muted"]}" font-size="14">No data yet.</text>')

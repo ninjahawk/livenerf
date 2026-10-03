@@ -13,7 +13,7 @@ def test_points_render_in_both_themes():
     pts = [(DAY0 + timedelta(days=2 + i), 55.0 + i, 5.0) for i in range(5)]
     for theme in ("light", "dark"):
         svg = render(pts, None, DAY0, 390, theme)
-        assert svg.count("<circle") == 5 and "59.0%" in svg and "Collecting the baseline: day 5" in svg
+        assert svg.count("<circle") == 5 and "59.0%" in svg and "Collecting the baseline: 5 days so far, the window closes Oct 2, 00:00 UTC" in svg
 
 
 def test_baseline_mean_draws_a_dashed_reference():
