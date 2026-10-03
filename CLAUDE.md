@@ -19,9 +19,11 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
 - **Open issues:** #8 (provider special-casing; the eval card links it) and #12 (coding tasks, next
   version). #7 (other models) and #10 (usage estimates) are closed as not planned: other models wait for
   contributors or funding. #14 was done by the eval-card rewrite (`bf862fa`).
-- **Discord:** the community server is built from `~/Desktop/livenerf-discord` (its README). Its task
-  `livenerf discord post` reads `logs/` read-only and posts each finished day with its chart. Nothing in
-  this repo depends on it.
+- **Discord:** the community server is built from `~/Desktop/livenerf-discord` (its README). Its hourly
+  task `livenerf discord post` reads `logs/` read-only. It posts each finished day with its chart, runs the
+  better/worse game, posts a recap line in #general and fills #nerf-watch. A second task,
+  `livenerf discord welcome`, runs every 2 minutes and greets new members. Nothing in this repo depends on
+  either task.
 - **Daily run:** the Windows task `livenerf daily` fires at 05:07 local time and retries every hour
   until 23:07, until the day's run is in (`logs/daily.jsonl`, `status: ran`). A day with the PC off
   all day is lost. A day with the PC on and logged in at any point from 05:07 to 23:07 catches up.
