@@ -11,8 +11,10 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
   - The earliest possible call under the decision rule is day 30.
 - **Progress (2026-10-02):** days 1–9 are in, none missed, every one at 90 samples on hash
   `461391b6fce64167`. Day 5 ran with the budget guard overridden once (deviations log, 2026-09-28).
-  **Next milestone:** day 10 (2026-10-03 UTC). The baseline ends 2026-10-04 22:10 UTC; then append the
-  realized MDE to PREREGISTRATION.md "Power" before any post-baseline comparison is looked at.
+  **Baseline:** days 1–10, complete with day 10 (2026-10-03). It ends 2026-10-04 00:00 UTC: UTC midnight
+  of day 1 plus 240 h, on the same grid as the windows (issue #9, deviations log 2026-10-03; it used to be
+  first run + 240 h, which swallowed window 1). **Next:** append the realized MDE to PREREGISTRATION.md
+  "Power" before any post-baseline comparison is looked at.
 - **Daily run:** the Windows task `livenerf daily` fires at 05:07 local time and retries every hour
   until 23:07, until the day's run is in (`logs/daily.jsonl`, `status: ran`). A day with the PC off
   all day is lost. A day with the PC on and logged in at any point from 05:07 to 23:07 catches up.

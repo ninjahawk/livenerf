@@ -102,3 +102,18 @@ def test_decision_requires_the_same_harness():
             for i, (d, h) in enumerate([(math.nan, "aaa"), (-0.05, "aaa"), (-0.05, "aaa"), (-0.05, "bbb")])]
     out = decision(pd.DataFrame(rows))
     assert out[1]["change_declared"] and not out[2]["qualifies"]
+
+
+def test_baseline_is_exactly_the_first_window_when_day_1_starts_late():
+    """Issue #9: day 1 at 22:10 UTC, later runs just after midnight. The baseline must hold days 1-10
+    only, and the second and third 10-day windows must both start at or after the cutoff."""
+    from livenerf.analysis import baseline_end_for
+
+    runs = [pd.Timestamp("2026-09-24 22:10", tz="UTC")] + \
+        [pd.Timestamp("2026-09-25 00:20", tz="UTC") + pd.Timedelta(days=k) for k in range(29)]
+    end = pd.Timestamp(baseline_end_for(pd.DataFrame({"run_created": runs})))
+    assert end == pd.Timestamp("2026-10-04 00:00", tz="UTC")
+    assert sum(r < end for r in runs) == 10
+    origin = runs[0].floor("D")
+    window_starts = [origin + pd.Timedelta(days=10 * k) for k in range(3)]
+    assert window_starts[0] < end <= window_starts[1]

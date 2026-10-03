@@ -39,7 +39,7 @@ possible call is around 2026-10-24. The first Results row lands after day 20. Th
 confirmed, locked and validated under a pre-registered protocol (v2). Every number below is
 generated from the logs in [docs/CALIBRATION.md](docs/CALIBRATION.md).
 
-**Progress (2026-10-03):** 10 of 30 days collected, none missed. The baseline window is the first 240 hours, so it closes 2026-10-04 22:10 UTC. All 10 days ran
+**Progress (2026-10-03):** 10 of 30 days collected, none missed. That completes the baseline (days 1–10); the first decision window starts with day 11. All 10 days ran
 the full 90 samples on the same harness hash (`461391b6fce64167`) and pinned CLI (2.1.280). Day 5 ran
 with the budget guard overridden once (see the deviations log).
 

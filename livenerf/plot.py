@@ -57,7 +57,10 @@ def render(pts, base_mean, start: datetime, n_samples: int, theme: str) -> str:
     pl, pr, pt, pb = 64, 28, 92, 52
     pw, ph = w - pl - pr, h - pt - pb
 
-    t0 = start.replace(hour=0, minute=0, second=0, microsecond=0)
+    # each day is drawn at noon, so the axis starts at day 1's point and the band ends at day 10's:
+    # no empty half-day at either edge of the baseline band
+    origin = start.replace(hour=0, minute=0, second=0, microsecond=0)
+    t0 = origin + timedelta(hours=12)
     t1 = max(t0 + MIN_SPAN, (pts[-1][0] + timedelta(days=4)) if pts else t0)
     lo = min([40.0] + [v - 1.96 * s for _, v, s in pts])
     hi = max([80.0] + [v + 1.96 * s for _, v, s in pts])
@@ -86,7 +89,7 @@ def render(pts, base_mean, start: datetime, n_samples: int, theme: str) -> str:
         gy = y(v)
         o.append(f'<line x1="{pl}" y1="{gy:.1f}" x2="{w - pr}" y2="{gy:.1f}" stroke="{c["grid"]}" stroke-width="1"/>')
         o.append(f'<text x="{pl - 10}" y="{gy + 4:.1f}" text-anchor="end" fill="{c["muted"]}" font-size="12">{v}%</text>')
-    bx0, bx1 = x(t0), x(t0 + timedelta(hours=BASELINE_HOURS))
+    bx0, bx1 = x(t0), x(origin + timedelta(hours=BASELINE_HOURS - 12))
     o.append(f'<rect x="{bx0:.1f}" y="{pt}" width="{bx1 - bx0:.1f}" height="{ph}" fill="{c["band"]}" opacity="0.6"/>')
     o.append(f'<text x="{bx0 + 6:.1f}" y="{pt + 16}" fill="{c["ink2"]}" font-size="12">baseline ({BASELINE_HOURS // 24} days)</text>')
     o.append(f'<text x="{bx0 + 6:.1f}" y="{pt + ph - 8}" fill="{c["muted"]}" font-size="11">day 1 · {start:%b %d}</text>')
@@ -114,8 +117,8 @@ def render(pts, base_mean, start: datetime, n_samples: int, theme: str) -> str:
         if base_mean is None:
             o.append(f'<text x="{(bx1 + w - pr) / 2:.1f}" y="{pt + ph / 2:.1f}" text-anchor="middle" fill="{c["muted"]}" font-size="14">'
                      f"Collecting the baseline: {len(pts)} days so far, the window closes "
-                     f"{(start + timedelta(hours=BASELINE_HOURS)):%b} {(start + timedelta(hours=BASELINE_HOURS)).day}, "
-                     f"{(start + timedelta(hours=BASELINE_HOURS)):%H:%M} UTC.</text>")
+                     f"{(origin + timedelta(hours=BASELINE_HOURS)):%b} {(origin + timedelta(hours=BASELINE_HOURS)).day}, "
+                     f"{(origin + timedelta(hours=BASELINE_HOURS)):%H:%M} UTC.</text>")
     else:
         o.append(f'<text x="{pl + pw / 2:.1f}" y="{pt + ph / 2:.1f}" text-anchor="middle" '
                  f'fill="{c["muted"]}" font-size="14">No data yet.</text>')
@@ -220,7 +223,7 @@ def render_families(series: dict, start: datetime, theme: str) -> str:
         o.append(f'<line x1="{x0}" y1="{y(0):.1f}" x2="{x0 + pw}" y2="{y(0):.1f}" stroke="{c["axis"]}"/>')
         for val in (-y_max, y_max):
             o.append(f'<text x="{x0 - 6}" y="{y(val) + 4:.1f}" text-anchor="end" fill="{c["muted"]}" font-size="11">{val:+d}</text>')
-        bx0, bx1 = x(start), x(start + timedelta(hours=BASELINE_HOURS))
+        bx0, bx1 = x(t0), x(t0 + timedelta(hours=BASELINE_HOURS))  # same grid as the analysis
         o.append(f'<rect x="{bx0:.1f}" y="{y0}" width="{bx1 - bx0:.1f}" height="{ph}" fill="{c["band"]}" opacity="0.6"/>')
         o.append(f'<text x="{x0}" y="{y0 + ph + 16}" fill="{c["muted"]}" font-size="11">{t0:%b %d}</text>')
         o.append(f'<text x="{x0 + pw}" y="{y0 + ph + 16}" text-anchor="end" fill="{c["muted"]}" font-size="11">{t1:%b %d}</text>')
