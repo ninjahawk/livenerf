@@ -18,8 +18,8 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
 - **Progress (2026-10-05):** day 11 ran (90/90). Realized MDE appended to PREREGISTRATION.md "Power":
   6.6 points per 10-day window (predicted 7.5). Day 12 (2026-10-05): the guard skipped it (weekly 79–82%,
   reset 10-06 07:00 UTC), and an override run (deviations log) crashed on an out-of-memory PC. That run
-  is excluded whole (`livenerf.analysis.EXCLUDED_RUNS`, deviations log 2026-10-05). A rerun the same UTC
-  day needs free commit memory first, plus `--weekly-cap 99`.
+  is excluded whole (`livenerf.analysis.EXCLUDED_RUNS`, deviations log 2026-10-05). The rerun at 05:03 UTC,
+  after memory was freed, is day 12: 90/90, 0 errors, same hash.
 - **Open issues:** #8 (provider special-casing; the eval card links it) and #12 (coding tasks, next
   version). #7 (other models) and #10 (usage estimates) are closed as not planned: other models wait for
   contributors or funding. #14 was done by the eval-card rewrite (`bf862fa`).
