@@ -72,9 +72,23 @@ def test_realized_mde_shrinks_with_more_samples():
 
     small, big = realized_mde(base(4)), realized_mde(base(16))
     assert small["items"] == 20 and big["mde_points"] < small["mde_points"]
-    # p = 0.5 everywhere; n baseline samples over ~7 days, so a 14-day window holds ~2n:
-    # SE = sqrt(20 * 0.25 * (1/2n + 1/n)) / 20
-    assert big["se_points"] == pytest.approx(100 * math.sqrt(20 * 0.25 * (1 / 32 + 1 / 16)) / 20, rel=0.1)
+    # p = 0.5 everywhere; 16 baseline samples on 7 UTC days, so a 10-day window holds 16 * 10/7:
+    # SE = sqrt(20 * 0.25 * (7/160 + 1/16)) / 20
+    assert big["se_points"] == pytest.approx(100 * math.sqrt(20 * 0.25 * (7 / 160 + 1 / 16)) / 20, rel=0.01)
+
+
+def test_realized_mde_counts_run_days_not_span():
+    # the real baseline shape: one run a day for 10 UTC days, the first late (22:10) and the last early
+    # (00:18), so first-to-last is only ~8.1 days. A 10-day window holds 10 samples per item, not 12.4.
+    from livenerf.analysis import realized_mde
+
+    t0 = pd.Timestamp("2026-09-24 22:10", tz="UTC")
+    times = [t0] + [pd.Timestamp("2026-09-25 00:18", tz="UTC") + pd.Timedelta(days=d) for d in range(9)]
+    assert len({t.date() for t in times}) == 10 and (times[-1] - times[0]).total_seconds() / 86400 < 8.2
+    rows = [{"item_hash": f"i{i}", "score": float((i + k) % 2), "error": None, "run_created": t}
+            for i in range(20) for k, t in enumerate(times)]
+    r = realized_mde(pd.DataFrame(rows))
+    assert r["se_points"] == pytest.approx(100 * math.sqrt(20 * 0.25 * (1 / 10 + 1 / 10)) / 20)
 
 
 def test_classifier_refusal_text_is_a_classifier_event():

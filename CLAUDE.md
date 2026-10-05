@@ -14,8 +14,12 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
   **Baseline:** days 1–10, complete with day 10 (2026-10-03). It ends 2026-10-04 00:00 UTC: UTC midnight
   of day 1 plus 240 h, on the same grid as the windows (issue #9, fixed in `391a635`, deviations log
   2026-10-03; it used to be first run + 240 h, which swallowed window 1). Day 11 (2026-10-04) is the first
-  run of window 1. **Still open:** append the realized MDE to PREREGISTRATION.md "Power" before any
-  post-baseline comparison is looked at.
+  run of window 1.
+- **Progress (2026-10-05):** day 11 ran (90/90). Realized MDE appended to PREREGISTRATION.md "Power":
+  6.6 points per 10-day window (predicted 7.5). Day 12 (2026-10-05): the guard skipped it (weekly 79–82%,
+  reset 10-06 07:00 UTC), and an override run (deviations log) crashed on an out-of-memory PC. That run
+  is excluded whole (`livenerf.analysis.EXCLUDED_RUNS`, deviations log 2026-10-05). A rerun the same UTC
+  day needs free commit memory first, plus `--weekly-cap 99`.
 - **Open issues:** #8 (provider special-casing; the eval card links it) and #12 (coding tasks, next
   version). #7 (other models) and #10 (usage estimates) are closed as not planned: other models wait for
   contributors or funding. #14 was done by the eval-card rewrite (`bf862fa`).
@@ -106,6 +110,14 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
   If the weekly reset falls after the UTC day ends, the day is lost unless the guard is overridden, and
   an override needs a deviations-log entry *before* the run (`--weekly-cap 99`, as on 2026-09-28).
 - "usage meter unavailable" right after boot is transient; the next hourly attempt catches up.
+- The PC's commit limit is 39.1 GB, shared with the Minecraft server (Java), Blender and so on. With
+  free commit near zero, a run crashes mid-way (`MemoryError`, CLI exit 0xC0000409, "paging file is
+  too small") and leaves partial logs and no `daily.jsonl` line. Check free commit before a manual
+  run. A crashed run is excluded whole: list its logs in `EXCLUDED_RUNS` with a deviations-log entry,
+  and never delete them.
+- `livenerf-discord` must stay at `~/Desktop/livenerf-discord`: its scheduled tasks use that working
+  directory and fail with 0x8007010B if it moves. It holds the bot token in `.env`, so it must
+  never sit inside this repo.
 - The series day is the UTC day. The task's local-evening attempts (20:07–23:07 EDT) already count
   for the next UTC day.
 - Windows (baseline, window 1, window 2) are on the UTC-midnight grid of day 1, not 240 h from the first

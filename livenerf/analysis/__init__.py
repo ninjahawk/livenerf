@@ -35,11 +35,24 @@ def error_kind(message: str | None) -> str | None:
     return "other"
 
 
+# Runs that crashed mid-way for a reason outside the model (PREREGISTRATION.md, deviations log). The logs
+# stay on disk untouched; their samples are left out of every analysis, chart and post.
+EXCLUDED_RUNS = {
+    # 2026-10-05, day 12's first attempt: the PC ran out of commit memory mid-run (deviations log 2026-10-05)
+    "2026-10-05T04-13-08-00-00_livenerf-aime_UrFb5ppJPLXh8tQAfMTWpy.eval",
+    "2026-10-05T04-13-08-00-00_livenerf-comps_ZJ7NAC4iiHYV5EEPDTUGRS.eval",
+    "2026-10-05T04-13-08-00-00_livenerf-gpqa_o2uxpCwZX8WDiqd2DFgB9r.eval",
+    "2026-10-05T04-13-08-00-00_livenerf-mmlupro_WNuUJqTMfbLTC2sNs23edn.eval",
+}
+
+
 def load_samples(log_dir: str) -> pd.DataFrame:
     from inspect_ai.log import list_eval_logs, read_eval_log
 
     rows = []
     for info in list_eval_logs(log_dir):
+        if info.name.replace("\\", "/").rsplit("/", 1)[-1] in EXCLUDED_RUNS:
+            continue
         log = read_eval_log(info)
         created = pd.Timestamp(log.eval.created).tz_convert("UTC")
         for s in log.samples or []:
@@ -163,15 +176,17 @@ def decision(summary: pd.DataFrame) -> list[dict]:
 
 
 def realized_mde(baseline: pd.DataFrame) -> dict:
-    """The weekly MDE implied by baseline data alone (pre-registered: computed before any comparison).
+    """The 10-day-window MDE implied by baseline data alone (pre-registered: computed before any comparison).
 
-    Each item's variance is its baseline p(1-p). A 2-week window is assumed to sample each item as
-    often as the (2-week) baseline did, and the baseline mean has its own sampling error, so
-    Var(delta) = (1/K^2) * sum_i p_i(1-p_i) * (1/m_window_i + 1/m_base_i)."""
+    Each item's variance is its baseline p(1-p). A window is assumed to sample each item at the
+    baseline's rate per UTC day, and the baseline mean has its own sampling error, so
+    Var(delta) = (1/K^2) * sum_i p_i(1-p_i) * (1/m_window_i + 1/m_base_i).
+    The rate counts UTC days with a run, not the first-to-last-run span: n daily runs span n-1 days
+    or less, which overstated m_window by up to 24% on the real baseline."""
     ok = baseline[baseline["error"].isna()]
     if ok.empty:
         return {"items": 0, "se_points": math.nan, "mde_points": math.nan}
-    days = max((ok["run_created"].max() - ok["run_created"].min()).total_seconds() / 86400, 1.0)
+    days = max(ok["run_created"].dt.tz_convert("UTC").dt.date.nunique(), 1)
     g = ok.groupby("item_hash")["score"].agg(["mean", "size"])
     m_window = g["size"] * WINDOW_DAYS["F"] / days
     var = (g["mean"] * (1 - g["mean"]) * (1 / m_window + 1 / g["size"])).sum() / len(g) ** 2
