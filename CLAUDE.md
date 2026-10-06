@@ -20,6 +20,8 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
   reset 10-06 07:00 UTC), and an override run (deviations log) crashed on an out-of-memory PC. That run
   is excluded whole (`livenerf.analysis.EXCLUDED_RUNS`, deviations log 2026-10-05). The rerun at 05:03 UTC,
   after memory was freed, is day 12: 90/90, 0 errors, same hash.
+- **Progress (2026-10-06):** day 13 skipped at weekly 98% (00:07–03:07 UTC), then ran by the task at
+  09:07 UTC after the weekly reset (next reset 10-13 07:00 UTC): 90/90, 0 errors, same hash, clean tree.
 - **Open issues:** #8 (provider special-casing; the eval card links it) and #12 (coding tasks, next
   version). #7 (other models) and #10 (usage estimates) are closed as not planned: other models wait for
   contributors or funding. #14 was done by the eval-card rewrite (`bf862fa`).
