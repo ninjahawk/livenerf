@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="380" viewBox="0 0 960 380" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
 <title id="t">Claude Opus 5.5 compared with its own launch week</title>
-<desc id="d">Daily score on the calibrated standard-benchmark panel, percent correct, with 95% confidence interval. 13 days so far.</desc>
+<desc id="d">Daily score on the calibrated standard-benchmark panel, percent correct, with 95% confidence interval. 15 days so far.</desc>
 <rect width="960" height="380" rx="10" fill="#1a1a19"/>
 <text x="64" y="38" fill="#ffffff" font-size="20" font-weight="600">Claude Opus 5.5 vs. its own launch week</text>
 <text x="64" y="62" fill="#c3c2b7" font-size="13">Daily score on the frozen 78-question panel, % correct, with 95% CI. Dashed line = baseline mean.</text>
@@ -24,8 +24,8 @@
 <text x="823.5" y="350" text-anchor="middle" fill="#898781" font-size="12">Oct 22</text>
 <line x1="64" y1="219.5" x2="932" y2="219.5" stroke="#c3c2b7" stroke-width="1.5" stroke-dasharray="6 5"/>
 <text x="928" y="213.5" text-anchor="end" fill="#c3c2b7" font-size="12">baseline 58.4%</text>
-<path d="M64.0,151.2 L91.1,134.3 L118.2,153.8 L145.4,144.0 L172.5,122.6 L199.6,188.1 L226.8,176.1 L253.9,168.6 L281.0,183.7 L308.1,122.6 L335.2,94.7 L362.4,136.8 L389.5,144.0 L389.5,273.0 L362.4,265.0 L335.2,216.4 L308.1,249.0 L281.0,316.0 L253.9,300.4 L226.8,308.2 L199.6,319.7 L172.5,249.0 L145.4,273.0 L118.2,284.6 L91.1,264.0 L64.0,280.9 Z" fill="#3987e5" opacity="0.12"/>
-<path d="M64.0,216.1 L91.1,199.1 L118.2,219.2 L145.4,208.5 L172.5,185.8 L199.6,253.9 L226.8,242.2 L253.9,234.5 L281.0,249.8 L308.1,185.8 L335.2,155.5 L362.4,200.9 L389.5,208.5" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M64.0,151.2 L91.1,134.3 L118.2,153.8 L145.4,144.0 L172.5,122.6 L199.6,188.1 L226.8,176.1 L253.9,168.6 L281.0,183.7 L308.1,122.6 L335.2,94.7 L362.4,136.8 L389.5,144.0 L416.6,158.5 L443.8,153.8 L443.8,284.6 L416.6,288.7 L389.5,273.0 L362.4,265.0 L335.2,216.4 L308.1,249.0 L281.0,316.0 L253.9,300.4 L226.8,308.2 L199.6,319.7 L172.5,249.0 L145.4,273.0 L118.2,284.6 L91.1,264.0 L64.0,280.9 Z" fill="#3987e5" opacity="0.12"/>
+<path d="M64.0,216.1 L91.1,199.1 L118.2,219.2 L145.4,208.5 L172.5,185.8 L199.6,253.9 L226.8,242.2 L253.9,234.5 L281.0,249.8 L308.1,185.8 L335.2,155.5 L362.4,200.9 L389.5,208.5 L416.6,223.6 L443.8,219.2" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <line x1="64.0" y1="280.9" x2="64.0" y2="151.2" stroke="#3987e5" stroke-width="1.5" opacity="0.5"/>
 <circle cx="64.0" cy="216.1" r="3.5" fill="#3987e5" stroke="#1a1a19" stroke-width="1.5"/>
 <line x1="91.1" y1="264.0" x2="91.1" y2="134.3" stroke="#3987e5" stroke-width="1.5" opacity="0.5"/>
@@ -52,6 +52,10 @@
 <circle cx="362.4" cy="200.9" r="3.5" fill="#3987e5" stroke="#1a1a19" stroke-width="1.5"/>
 <line x1="389.5" y1="273.0" x2="389.5" y2="144.0" stroke="#3987e5" stroke-width="1.5" opacity="0.5"/>
 <circle cx="389.5" cy="208.5" r="3.5" fill="#3987e5" stroke="#1a1a19" stroke-width="1.5"/>
-<text x="399.5" y="200.5" fill="#ffffff" font-size="13" font-weight="600">60.3%</text>
-<text x="932" y="368" text-anchor="end" fill="#898781" font-size="11">1014 samples · updated 2026-10-06 19:25 UTC</text>
+<line x1="416.6" y1="288.7" x2="416.6" y2="158.5" stroke="#3987e5" stroke-width="1.5" opacity="0.5"/>
+<circle cx="416.6" cy="223.6" r="3.5" fill="#3987e5" stroke="#1a1a19" stroke-width="1.5"/>
+<line x1="443.8" y1="284.6" x2="443.8" y2="153.8" stroke="#3987e5" stroke-width="1.5" opacity="0.5"/>
+<circle cx="443.8" cy="219.2" r="3.5" fill="#3987e5" stroke="#1a1a19" stroke-width="1.5"/>
+<text x="453.8" y="211.2" fill="#ffffff" font-size="13" font-weight="600">58.4%</text>
+<text x="932" y="368" text-anchor="end" fill="#898781" font-size="11">1170 samples · updated 2026-10-08 03:29 UTC</text>
 </svg>
