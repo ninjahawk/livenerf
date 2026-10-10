@@ -12,10 +12,10 @@
 <rect x="40.0" y="108" width="131.2" height="150" fill="#2c2c2a" opacity="0.6"/>
 <text x="40" y="274" fill="#898781" font-size="11">Sep 24</text>
 <text x="460" y="274" text-anchor="end" fill="#898781" font-size="11">Oct 26</text>
-<path d="M177.8,152.5 L190.9,163.7 L204.1,150.3 L217.2,152.7 L230.3,143.7 L230.3,205.7 L217.2,252.2 L204.1,226.8 L190.9,241.2 L177.8,224.6 Z" fill="#3987e5" opacity="0.12"/>
-<path d="M177.8,188.6 L190.9,202.4 L204.1,188.6 L217.2,202.4 L230.3,174.7" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
-<circle cx="230.3" cy="174.7" r="3.5" fill="#3987e5"/>
-<text x="250.0" y="274" text-anchor="middle" fill="#c3c2b7" font-size="12">latest +5.0 pts · tokens -3%</text>
+<path d="M177.8,152.5 L190.9,163.7 L204.1,150.3 L217.2,152.7 L230.3,143.7 L243.4,161.7 L256.6,129.5 L256.6,192.0 L243.4,243.2 L230.3,205.7 L217.2,252.2 L204.1,226.8 L190.9,241.2 L177.8,224.6 Z" fill="#3987e5" opacity="0.12"/>
+<path d="M177.8,188.6 L190.9,202.4 L204.1,188.6 L217.2,202.4 L230.3,174.7 L243.4,202.4 L256.6,160.8" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="256.6" cy="160.8" r="3.5" fill="#3987e5"/>
+<text x="250.0" y="274" text-anchor="middle" fill="#c3c2b7" font-size="12">latest +13.3 pts · tokens -6%</text>
 <text x="516" y="98" fill="#ffffff" font-size="14" font-weight="600">MMLU-Pro<tspan fill="#898781" font-weight="400" font-size="12">  baseline 53% (47% above chance)</tspan></text>
 <rect x="516" y="108" width="420" height="150" fill="none" stroke="#2c2c2a"/>
 <line x1="516" y1="183.0" x2="936" y2="183.0" stroke="#383835"/>
@@ -24,10 +24,10 @@
 <rect x="516.0" y="108" width="131.2" height="150" fill="#2c2c2a" opacity="0.6"/>
 <text x="516" y="274" fill="#898781" font-size="11">Sep 24</text>
 <text x="936" y="274" text-anchor="end" fill="#898781" font-size="11">Oct 26</text>
-<path d="M653.8,111.1 L666.9,136.0 L680.1,140.6 L693.2,159.8 L706.3,152.5 L706.3,223.7 L693.2,216.4 L680.1,205.0 L666.9,199.5 L653.8,173.6 Z" fill="#3987e5" opacity="0.12"/>
-<path d="M653.8,142.3 L666.9,167.7 L680.1,172.8 L693.2,188.1 L706.3,188.1" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
-<circle cx="706.3" cy="188.1" r="3.5" fill="#3987e5"/>
-<text x="726.0" y="274" text-anchor="middle" fill="#c3c2b7" font-size="12">latest -1.7 pts · tokens -20%</text>
+<path d="M653.8,111.1 L666.9,136.0 L680.1,140.6 L693.2,159.8 L706.3,152.5 L719.4,160.6 L732.6,169.8 L732.6,226.7 L719.4,225.7 L706.3,223.7 L693.2,216.4 L680.1,205.0 L666.9,199.5 L653.8,173.6 Z" fill="#3987e5" opacity="0.12"/>
+<path d="M653.8,142.3 L666.9,167.7 L680.1,172.8 L693.2,188.1 L706.3,188.1 L719.4,193.2 L732.6,198.3" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="732.6" cy="198.3" r="3.5" fill="#3987e5"/>
+<text x="726.0" y="274" text-anchor="middle" fill="#c3c2b7" font-size="12">latest -5.1 pts · tokens -14%</text>
 <text x="40" y="318" fill="#ffffff" font-size="14" font-weight="600">Competition math<tspan fill="#898781" font-weight="400" font-size="12">  baseline 61%</tspan></text>
 <rect x="40" y="328" width="420" height="150" fill="none" stroke="#2c2c2a"/>
 <line x1="40" y1="403.0" x2="460" y2="403.0" stroke="#383835"/>
@@ -36,10 +36,10 @@
 <rect x="40.0" y="328" width="131.2" height="150" fill="#2c2c2a" opacity="0.6"/>
 <text x="40" y="494" fill="#898781" font-size="11">Sep 24</text>
 <text x="460" y="494" text-anchor="end" fill="#898781" font-size="11">Oct 26</text>
-<path d="M177.8,330.6 L190.9,371.1 L204.1,382.1 L217.2,336.0 L230.3,371.1 L230.3,410.6 L217.2,401.6 L204.1,443.8 L190.9,410.6 L177.8,451.1 Z" fill="#3987e5" opacity="0.12"/>
-<path d="M177.8,390.9 L190.9,390.9 L204.1,412.9 L217.2,368.8 L230.3,390.9" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
-<circle cx="230.3" cy="390.9" r="3.5" fill="#3987e5"/>
-<text x="250.0" y="494" text-anchor="middle" fill="#c3c2b7" font-size="12">latest +13.8 pts · tokens +22%</text>
+<path d="M177.8,330.6 L190.9,371.1 L204.1,382.1 L217.2,336.0 L230.3,371.1 L243.4,382.1 L256.6,371.1 L256.6,410.6 L243.4,443.8 L230.3,410.6 L217.2,401.6 L204.1,443.8 L190.9,410.6 L177.8,451.1 Z" fill="#3987e5" opacity="0.12"/>
+<path d="M177.8,390.9 L190.9,390.9 L204.1,412.9 L217.2,368.8 L230.3,390.9 L243.4,412.9 L256.6,390.9" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="256.6" cy="390.9" r="3.5" fill="#3987e5"/>
+<text x="250.0" y="494" text-anchor="middle" fill="#c3c2b7" font-size="12">latest +13.8 pts · tokens +19%</text>
 <text x="516" y="318" fill="#ffffff" font-size="14" font-weight="600">AIME 2025–26<tspan fill="#898781" font-weight="400" font-size="12">  baseline 96%</tspan></text>
 <rect x="516" y="328" width="420" height="150" fill="none" stroke="#2c2c2a"/>
 <line x1="516" y1="403.0" x2="936" y2="403.0" stroke="#383835"/>
@@ -48,10 +48,10 @@
 <rect x="516.0" y="328" width="131.2" height="150" fill="#2c2c2a" opacity="0.6"/>
 <text x="516" y="494" fill="#898781" font-size="11">Sep 24</text>
 <text x="936" y="494" text-anchor="end" fill="#898781" font-size="11">Oct 26</text>
-<path d="M653.8,332.5 L666.9,332.5 L680.1,332.5 L693.2,332.5 L706.3,403.0 L706.3,403.0 L693.2,425.9 L680.1,425.9 L666.9,425.9 L653.8,425.9 Z" fill="#3987e5" opacity="0.12"/>
-<path d="M653.8,379.2 L666.9,379.2 L680.1,379.2 L693.2,379.2 L706.3,403.0" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
-<circle cx="706.3" cy="403.0" r="3.5" fill="#3987e5"/>
-<text x="726.0" y="494" text-anchor="middle" fill="#c3c2b7" font-size="12">latest +0.0 pts · tokens +6%</text>
+<path d="M653.8,332.5 L666.9,332.5 L680.1,332.5 L693.2,332.5 L706.3,403.0 L719.4,332.5 L732.6,332.5 L732.6,425.9 L719.4,425.9 L706.3,403.0 L693.2,425.9 L680.1,425.9 L666.9,425.9 L653.8,425.9 Z" fill="#3987e5" opacity="0.12"/>
+<path d="M653.8,379.2 L666.9,379.2 L680.1,379.2 L693.2,379.2 L706.3,403.0 L719.4,379.2 L732.6,379.2" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="732.6" cy="379.2" r="3.5" fill="#3987e5"/>
+<text x="726.0" y="494" text-anchor="middle" fill="#c3c2b7" font-size="12">latest +4.8 pts · tokens +27%</text>
 <text x="40" y="538" fill="#ffffff" font-size="14" font-weight="600">Control: Opus 5 on GPQA<tspan fill="#898781" font-weight="400" font-size="12">  baseline 74% (65% above chance)</tspan></text>
 <rect x="40" y="548" width="420" height="150" fill="none" stroke="#2c2c2a"/>
 <line x1="40" y1="623.0" x2="460" y2="623.0" stroke="#383835"/>
@@ -60,8 +60,8 @@
 <rect x="40.0" y="548" width="131.2" height="150" fill="#2c2c2a" opacity="0.6"/>
 <text x="40" y="714" fill="#898781" font-size="11">Sep 24</text>
 <text x="460" y="714" text-anchor="end" fill="#898781" font-size="11">Oct 26</text>
-<path d="M177.8,592.1 L190.9,599.0 L204.1,556.6 L217.2,591.8 L230.3,599.0 L230.3,669.2 L217.2,620.8 L204.1,656.1 L190.9,669.2 L177.8,648.3 Z" fill="#3987e5" opacity="0.12"/>
-<path d="M177.8,620.2 L190.9,634.1 L204.1,606.3 L217.2,606.3 L230.3,634.1" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
-<circle cx="230.3" cy="634.1" r="3.5" fill="#3987e5"/>
-<text x="250.0" y="714" text-anchor="middle" fill="#c3c2b7" font-size="12">latest -6.7 pts · tokens +138%</text>
+<path d="M177.8,592.1 L190.9,599.0 L204.1,556.6 L217.2,591.8 L230.3,599.0 L243.4,589.2 L256.6,591.8 L256.6,620.8 L243.4,650.7 L230.3,669.2 L217.2,620.8 L204.1,656.1 L190.9,669.2 L177.8,648.3 Z" fill="#3987e5" opacity="0.12"/>
+<path d="M177.8,620.2 L190.9,634.1 L204.1,606.3 L217.2,606.3 L230.3,634.1 L243.4,620.0 L256.6,606.3" fill="none" stroke="#3987e5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="256.6" cy="606.3" r="3.5" fill="#3987e5"/>
+<text x="250.0" y="714" text-anchor="middle" fill="#c3c2b7" font-size="12">latest +10.0 pts · tokens +36%</text>
 </svg>
