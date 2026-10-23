@@ -42,6 +42,11 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
   rows 1–2). Nathan extended the series to day 45 and daily operation after it (deviations log 2026-10-23).
   Window 3 is days 31–40 (from 10-24), window 4 starts day 41 (11-03). `plot.TARGET_DAYS = 45` sets the axis.
   Nothing in `daily.py` or the Windows task has an end date, so collection simply continues.
+- **Records (2026-10-23):** `data/harness.lock` holds the series' harness hash; `livenerf.daily` refuses a run
+  on any other hash (a `refused` line in daily.jsonl), and `tests/test_record.py` fails on it too. After each
+  run the task rewrites `results/daily.csv` (`livenerf.record`: per UTC day × model × family, aggregates
+  only, committed and public) and copies new raw logs to `~/livenerf-backup` (`livenerf.backup`: never
+  overwrites or deletes). Commit `results/daily.csv` with the charts.
 - **Open issues:** #8 (provider special-casing; the eval card links it) and #12 (coding tasks, next
   version). #7 (other models) and #10 (usage estimates) are closed as not planned: other models wait for
   contributors or funding. #14 was done by the eval-card rewrite (`bf862fa`).

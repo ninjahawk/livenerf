@@ -67,6 +67,7 @@ def load_samples(log_dir: str) -> pd.DataFrame:
                 "arm": (log.eval.metadata or {}).get("arm", "measured"),
                 "harness_sha": (log.eval.metadata or {}).get("harness_sha"),
                 "harness_content": ((log.eval.metadata or {}).get("harness_sha") or "").partition("+")[2] or None,
+                "funding_source": (log.eval.metadata or {}).get("funding_source"),  # absent = the Max plan
                 "id": s.id,
                 "epoch": s.epoch,
                 "family": s.metadata.get("family"),
