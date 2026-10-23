@@ -18,7 +18,8 @@ from .analysis import BASELINE_HOURS, MEASURED_MODEL, baseline_end_for, load_sam
 from .common import REPO_ROOT
 
 DAY0 = datetime(2026, 9, 22, tzinfo=timezone.utc)
-MIN_SPAN = timedelta(days=32)
+TARGET_DAYS = 45  # extended from 30 on 2026-10-23 (PREREGISTRATION.md deviations log)
+MIN_SPAN = timedelta(days=TARGET_DAYS + 2)
 
 THEMES = {
     "light": dict(surface="#fcfcfb", ink="#0b0b0b", ink2="#52514e", muted="#898781", grid="#e1e0d9",
