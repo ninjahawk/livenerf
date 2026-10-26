@@ -68,6 +68,7 @@ def load_samples(log_dir: str) -> pd.DataFrame:
                 "harness_sha": (log.eval.metadata or {}).get("harness_sha"),
                 "harness_content": ((log.eval.metadata or {}).get("harness_sha") or "").partition("+")[2] or None,
                 "funding_source": (log.eval.metadata or {}).get("funding_source"),  # absent = the Max plan
+                "runner": (log.eval.metadata or {}).get("runner", "host"),  # absent = this PC (before 2026-10-25)
                 "id": s.id,
                 "epoch": s.epoch,
                 "family": s.metadata.get("family"),

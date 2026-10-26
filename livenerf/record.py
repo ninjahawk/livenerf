@@ -15,7 +15,8 @@ from .common import REPO_ROOT
 
 OUT = REPO_ROOT / "results" / "daily.csv"
 COLUMNS = ["series_day", "date_utc", "run_start_utc", "model", "arm", "family", "samples", "scored", "errors",
-           "classifier_events", "score", "output_tokens_median", "cli_version", "harness_hash", "funding_source"]
+           "classifier_events", "score", "output_tokens_median", "cli_version", "harness_hash", "funding_source",
+           "runner"]
 
 
 def daily_record(df: pd.DataFrame) -> pd.DataFrame:
@@ -43,6 +44,7 @@ def daily_record(df: pd.DataFrame) -> pd.DataFrame:
                 "cli_version": ",".join(sorted(set(f["cli_version"].dropna()))),
                 "harness_hash": ",".join(sorted(set(f["harness_content"].dropna()))),
                 "funding_source": ",".join(sorted(set(f["funding_source"].dropna()))) or "max",
+                "runner": ",".join(sorted(set(f["runner"].dropna()))) if "runner" in f else "host",
             })
     return pd.DataFrame(rows, columns=COLUMNS)
 

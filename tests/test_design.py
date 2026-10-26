@@ -71,5 +71,26 @@ def test_daily_runs_once_per_utc_day(tmp_path, monkeypatch):
     assert not daily.ran_today()
     daily.record({"status": "skipped", "reason": "usage above cap"})
     assert not daily.ran_today()  # a skipped attempt retries at the next hour
+    daily.record({"status": "failed", "day": datetime.now(timezone.utc).date().isoformat(), "failed_logs": 2})
+    assert not daily.ran_today()  # a failed attempt (e.g. a usage limit) retries too
     daily.record({"status": "ran", "day": datetime.now(timezone.utc).date().isoformat()})
-    assert daily.ran_today()
+    assert daily.ran_today() == "host"
+
+
+def test_daily_one_run_per_day_across_runners(tmp_path, monkeypatch):
+    import json
+    import sys
+    from datetime import datetime, timezone
+
+    from livenerf import daily
+
+    today = datetime.now(timezone.utc).date().isoformat()
+    vm_log, host_log = tmp_path / "vm.jsonl", tmp_path / "host.jsonl"
+    host_log.write_text(json.dumps({"status": "ran", "day": today, "runner": "host"}) + "\n")
+    monkeypatch.setattr(daily, "LOG", vm_log)
+    monkeypatch.setattr(daily, "run_arms", lambda pin: (_ for _ in ()).throw(AssertionError("must not run")))
+    monkeypatch.setattr(sys, "argv", ["daily", "--runner", "conductor-vm", "--peer-log", str(host_log)])
+    daily.main()  # the host got there first: the VM refuses and runs nothing
+    line = json.loads(vm_log.read_text().splitlines()[-1])
+    assert (line["status"], line["runner"], line["day"]) == ("refused", "conductor-vm", today)
+    assert daily.ran_today() is None and daily.ran_today([host_log]) == "host"
