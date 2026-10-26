@@ -6,8 +6,8 @@
 #   powershell -ExecutionPolicy Bypass -File scripts\windows_task.ps1 uninstall
 #
 # One run a day (PREREGISTRATION.md, schedule): the task fires at 05:07 and then every hour until
-# 23:07, and livenerf.daily does nothing once today's run is in. A day blocked by the usage guard, or
-# missed while the PC slept, catches up at the next hourly attempt. It runs only while you are logged
+# 23:07, and livenerf.daily does nothing once today's run is in. A day whose attempt failed (e.g. on a
+# usage limit), or missed while the PC slept, catches up at the next hourly attempt. It runs only while you are logged
 # on (it needs the Claude Code login), hidden (conhost --headless, so no console window flashes),
 # never more than one at a time. It is a clock trigger, not a logon trigger: nothing starts at boot.
 # Output goes to logs\daily.log and logs\daily.jsonl.

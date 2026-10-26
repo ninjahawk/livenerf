@@ -251,7 +251,7 @@ Before any series data, [PREREGISTRATION.md](PREREGISTRATION.md) is committed. I
 │   ├── validate.py                 # Positive control + A/A check
 │   ├── preflight.py                # Go/no-go checklist before (and during) the series
 │   ├── usage.py                    # Reads the plan's usage meters (read-only)
-│   ├── daily.py                    # Daily entry point: pin and lock checks, budget guard, run, plot
+│   ├── daily.py                    # Daily entry point: pin and lock checks, run, plot
 │   ├── schedule.py                 # Harness hash; hourly rotations (unused by the daily series)
 │   ├── hourly.py                   # Hourly entry point (superseded by daily.py)
 │   ├── analysis/                   # Paired deltas, clustered SEs, the decision rule
