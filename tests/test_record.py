@@ -26,4 +26,5 @@ def test_daily_record_has_one_row_per_day_model_and_family():
     day1 = rec[(rec["series_day"] == 1) & (rec["family"] == "all")].iloc[0]
     assert (day1["samples"], day1["scored"], day1["classifier_events"], day1["score"]) == (3, 2, 1, 0.5)
     assert day1["funding_source"] == "max"
+    assert day1["runner"] == "host"  # logs without a runner label came from this PC
     assert sorted(rec["series_day"].unique()) == [1, 3]  # a missed day keeps its number
