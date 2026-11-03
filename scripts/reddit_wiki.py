@@ -49,6 +49,38 @@ def _unused_spark(vals, lo=None, hi=None):
     return "".join(BARS[min(7, max(0, int((v - lo) / (hi - lo + 1e-9) * 8)))] for v in vals)
 
 
+def text_chart(D, bmean, lo=0.475, hi=0.725, step=0.025):
+    """Plain-ASCII daily chart for Reddit (wikis do not render external images). One column per day, 2 per column past 70."""
+    per = 1 if len(D) <= 70 else 2
+    cols = [D[i:i + per] for i in range(0, len(D), per)]
+    vals = [S.mean(x["score"] for x in c) for c in cols]
+    nrow = round((hi - lo) / step)
+    brow = round((hi - bmean) / step)
+    out = []
+    for r in range(nrow + 1):
+        y = hi - r * step
+        line = []
+        for v in vals:
+            vr = min(nrow, max(0, round((hi - v) / step)))
+            ch = "*" if vr == r else ("-" if r == brow else " ")
+            if r == 0 and v > hi + step / 2: ch = "^"
+            if r == nrow and v < lo - step / 2: ch = "v"
+            line.append(ch)
+        lab = f"{y * 100:4.0f}% |" if abs(y * 100 / 5 - round(y * 100 / 5)) < 1e-6 else "      |"
+        tail = "  <- launch-week avg" if r == brow else ""
+        out.append(lab + "".join(line).rstrip() + tail)
+    out.append("      +" + "-" * len(vals))
+    ax = [" "] * len(vals)
+    for i, c in enumerate(cols):
+        dday = c[0]["day"]
+        if dday == 1 or (dday - 1) % (10 * per) == 0 or c is cols[-1]:
+            for j, chr_ in enumerate(str(dday)):
+                while i + j >= len(ax): ax.append(" ")
+                ax[i + j] = chr_
+    out.append("  day  " + "".join(ax).rstrip())
+    return "\n".join("    " + l for l in out)
+
+
 def pts(delta):
     m = re.match(r"([+\-−]?[\d.]+) ± ([\d.]+)", delta.replace("−", "-"))
     return f"{float(m[1]) * 100:+.1f} ± {float(m[2]) * 100:.1f}" if m else delta
@@ -76,8 +108,8 @@ def build(repo):
           + ("all within noise of launch week. " if verdict_all else "")
           + f"Latest window (days {lastw['days']}): **{pts(lastw['delta'])} points** vs launch week.\n>\n"
           + f"> This page updates automatically from [the LiveNerf repo]({GH}) every time new data is published.\n")
-    a(f"![LiveNerf daily chart]({RAW}/media/livenerf-dark.svg)\n")
-    a(f"^(Daily score with 95% error bars; dashed line = launch-week average.) [Full-size chart]({RAW}/media/livenerf-dark.svg)\n")
+    a(text_chart(D, S.mean(base)) + "\n")
+    a(f"^(Each * is one day's score on the frozen 78-question panel.) [Full chart with error bars]({GH}/blob/main/media/livenerf-dark.svg)\n")
     a("**Contents:** [Checkpoints](#wiki_checkpoints) · [Latest days](#wiki_latest_days) · "
       "[How it works](#wiki_how_it_works) · [How to read it](#wiki_how_to_read_it) · "
       "[What it can and can't tell you](#wiki_what_it_can_and_can.27t_tell_you) · "
