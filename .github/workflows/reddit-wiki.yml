@@ -1,0 +1,24 @@
+# .github/workflows/reddit-wiki.yml - regenerate the r/ClaudeAI wiki page whenever new data is pushed.
+name: reddit-wiki
+on:
+  push:
+    branches: [main]
+    paths: ["results/daily.csv", "README.md", "media/**"]
+  workflow_dispatch:
+jobs:
+  wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python scripts/reddit_wiki.py . --out wiki.md
+      - uses: actions/upload-artifact@v4
+        with: { name: wiki-md, path: wiki.md }
+      - run: python scripts/reddit_wiki_post.py wiki.md
+        env:
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
+          REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
