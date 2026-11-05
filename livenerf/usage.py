@@ -4,7 +4,8 @@
 
 Max plans don't publish limits in tokens, but Claude Code's /usage reads a percentage from
 /api/oauth/usage. livenerf reads the same meter with the local Claude Code login. It is a read-only
-GET: the token is read from ~/.claude/.credentials.json, never refreshed here (a second process
+GET: the token is read from ~/.claude/.credentials.json (on macOS, from the Keychain item
+"Claude Code-credentials" when that file is absent), never refreshed here (a second process
 refreshing a single-use refresh token can log Claude Code out) and never logged. If the token has
 expired or the call fails, the meter is simply unknown (None).
 
@@ -13,8 +14,11 @@ The endpoint rate-limits (HTTP 429 after a few calls a minute), so readings are 
 when a call fails, a reading under STALE seconds old stands in for it.
 """
 
+import getpass
 import json
 import os
+import subprocess
+import sys
 import time
 import urllib.request
 from pathlib import Path
@@ -45,6 +49,16 @@ def _token() -> str | None:
     try:
         return json.loads((config / ".credentials.json").read_text())["claudeAiOauth"]["accessToken"]
     except (OSError, KeyError, ValueError):
+        pass
+    if sys.platform != "darwin":
+        return None
+    # macOS: Claude Code keeps the login in the Keychain, not in .credentials.json
+    try:
+        out = subprocess.run(["security", "find-generic-password", "-s", "Claude Code-credentials",
+                              "-a", getpass.getuser(), "-w"],
+                             capture_output=True, text=True, timeout=10)
+        return json.loads(out.stdout)["claudeAiOauth"]["accessToken"] if out.returncode == 0 else None
+    except (OSError, subprocess.SubprocessError, KeyError, ValueError):
         return None
 
 
@@ -73,10 +87,11 @@ def _read() -> dict | None:
     except Exception:
         return None
     five, week = data.get("five_hour") or {}, data.get("seven_day") or {}
-    if five.get("utilization") is None or week.get("utilization") is None:
+    if week.get("utilization") is None:
         return None
     return {
-        "five_hour": float(five["utilization"]),
+        # five_hour is null when no 5-hour window is open or the plan has no 5-hour limit: nothing to cap
+        "five_hour": float(five.get("utilization") or 0.0),
         "weekly": float(week["utilization"]),
         "weekly_resets_at": week.get("resets_at"),
         "five_hour_resets_at": five.get("resets_at"),

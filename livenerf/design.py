@@ -262,9 +262,22 @@ def report(p: dict, args, tpp: float, tpp_info: dict) -> str:
 LOCK_FILE = REPO_ROOT / "data" / "panel.lock"
 
 
-def panel_digest() -> str | None:
+def _panel_lf() -> bytes | None:
     path = REPO_ROOT / "data" / "standard_panel.json"
-    return hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+    return path.read_bytes().replace(b"\r\n", b"\n") if path.exists() else None
+
+
+def panel_digest() -> str | None:
+    """sha256 of the panel with LF line endings, so every checkout of the same panel hashes the same."""
+    lf = _panel_lf()
+    return hashlib.sha256(lf).hexdigest() if lf is not None else None
+
+
+def _accepted_digests() -> set[str]:
+    # The series' lock was written on Windows over CRLF bytes; the LF digest is the same panel on
+    # macOS/Linux. Line endings are the only difference either form allows.
+    lf = _panel_lf()
+    return set() if lf is None else {hashlib.sha256(lf).hexdigest(), hashlib.sha256(lf.replace(b"\n", b"\r\n")).hexdigest()}
 
 
 def lock_panel() -> str:
@@ -280,7 +293,7 @@ def lock_ok() -> tuple[bool, str]:
     if not LOCK_FILE.exists():
         return False, "data/panel.lock missing (python -m livenerf.design --lock)"
     want, have = LOCK_FILE.read_text().strip(), panel_digest()
-    return want == have, f"panel sha256 {have} vs lock {want}"
+    return want in _accepted_digests(), f"panel sha256 {have} (LF) vs lock {want}"
 
 
 def main() -> None:
