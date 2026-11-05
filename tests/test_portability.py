@@ -78,7 +78,7 @@ def test_meter_reads_weekly_when_five_hour_is_null(tmp_path, monkeypatch):
     monkeypatch.setattr(usage, "_token", lambda: "tok")
     monkeypatch.setattr(usage.urllib.request, "urlopen", lambda req, timeout: Resp(json.dumps(body).encode()))
     got = usage._read()
-    assert got["weekly"] == 11.0 and got["five_hour"] == 0.0  # no open 5-hour window or limit: nothing to cap
+    assert got["weekly"] == 11.0 and got["five_hour"] == 0.0  # no 5-hour limit on the plan: nothing to cap
     body["seven_day"] = None
     assert usage._read() is None
 

@@ -90,7 +90,8 @@ def _read() -> dict | None:
     if week.get("utilization") is None:
         return None
     return {
-        # five_hour is null when no 5-hour window is open or the plan has no 5-hour limit: nothing to cap
+        # five_hour is null when the plan has no 5-hour limit (the response's "limits" list then has
+        # only weekly entries): nothing to cap
         "five_hour": float(five.get("utilization") or 0.0),
         "weekly": float(week["utilization"]),
         "weekly_resets_at": week.get("resets_at"),
