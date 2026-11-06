@@ -142,10 +142,14 @@ def _paired_tokens(a: pd.DataFrame, b: pd.DataFrame) -> dict:
 
 
 REPS = 4  # pre-registered samples per question per arm
+NO_SAMPLES = ("**INCOMPLETE: not a result.** No validation samples yet "
+              "(python -m livenerf.validate run --weekly-points 8).\n")
 
 
 def report() -> str:
     df = samples()
+    if df.empty:
+        return NO_SAMPLES
     ok = df[~df["error"]]
     # complete: every (question, arm) has REPS graded samples, or stopped after MAX_ERRORS errors (reported)
     grid = pd.MultiIndex.from_product([sorted(df["id"].unique()), list(ARMS)])
@@ -242,7 +246,8 @@ def main() -> None:
     else:
         text = report()
         print(text)
-        (REPO_ROOT / "docs" / "VALIDATION.md").write_text(text, encoding="utf-8")
+        if text != NO_SAMPLES:  # a fresh clone has no logs; never overwrite the published validation
+            (REPO_ROOT / "docs" / "VALIDATION.md").write_text(text, encoding="utf-8")
 
 
 if __name__ == "__main__":
