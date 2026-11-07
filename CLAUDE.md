@@ -7,7 +7,7 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
 ## Current state (update this section whenever it changes)
 
 - **The series is running.** Day 1 was 2026-09-24 22:10 UTC. It ran 30 days to 2026-10-23 and was then
-  extended to day 45 (about 2026-11-07) and daily after that.
+  extended to day 45 (2026-11-07), then to day 60 (about 2026-11-22), and daily after that.
   - Days 1–10 are the baseline. Days 11–20, 21–30, 31–40, … are the 10-day decision windows.
 - **Progress (2026-10-03):** days 1–10 are in, none missed, every one at 90 samples on hash
   `461391b6fce64167`. Day 5 ran with the budget guard overridden once (deviations log, 2026-09-28).
@@ -40,7 +40,7 @@ PREREGISTRATION.md before changing anything.** It is the contract, and the git h
   charts only). Window 2 has 9 of 10 days.
 - **Extended (2026-10-23):** day 30 ran (57.7%); windows 1 and 2 are complete, both no change (README Results
   rows 1–2). Nathan extended the series to day 45 and daily operation after it (deviations log 2026-10-23).
-  Window 3 is days 31–40 (from 10-24), window 4 starts day 41 (11-03). `plot.TARGET_DAYS = 45` sets the axis.
+  Window 3 is days 31–40 (from 10-24), window 4 starts day 41 (11-03). `plot.TARGET_DAYS = 60` sets the axis (45 -> 60 on 2026-11-07, deviations log). Window 5 = days 51–60.
   Nothing in `daily.py` or the Windows task has an end date, so collection simply continues.
 - **Records (2026-10-23):** `data/harness.lock` holds the series' harness hash; `livenerf.daily` refuses a run
   on any other hash (a `refused` line in daily.jsonl), and `tests/test_record.py` fails on it too. After each

@@ -18,7 +18,7 @@ from .analysis import BASELINE_HOURS, MEASURED_MODEL, baseline_end_for, load_sam
 from .common import REPO_ROOT
 
 DAY0 = datetime(2026, 9, 22, tzinfo=timezone.utc)
-TARGET_DAYS = 45  # extended from 30 on 2026-10-23 (PREREGISTRATION.md deviations log)
+TARGET_DAYS = 60  # extended from 30 on 2026-10-23, to 60 on 2026-11-07 (PREREGISTRATION.md deviations log)
 MIN_SPAN = timedelta(days=TARGET_DAYS + 2)
 
 THEMES = {

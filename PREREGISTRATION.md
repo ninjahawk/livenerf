@@ -399,3 +399,12 @@ Every 10-day result is published, whether it shows no change, a regression or an
   run per UTC day: whichever runner lands first wins and the other refuses (`livenerf.daily
   --peer-log`, and `livenerf.merge_runner` refuses a day this repo already has). The different
   subscription is a documented limitation, like the funding route.
+
+- **2026-11-07**, after day 45 (2026-11-07) and before day 46's data. **The series is extended to a
+  day-60 target, on the author's decision.** Days 1–45 and every verdict already recorded stand as they
+  are and are not revisited. Sampling carries on unchanged: same daily schedule, panel, prompts, graders,
+  effort, control arm, harness hash `461391b6fce64167`, CLI pin 2.1.280, runners and fallback. The
+  baseline (days 1–10) does not move. The 10-day windows continue on the same UTC-midnight grid: window 4
+  is days 41–50 and window 5 is days 51–60. The decision rule applies unchanged to each consecutive pair,
+  and a window's verdict is final only when the window is complete. Collection keeps running daily after
+  day 60 until the author stops it; the target only sets the chart's axis (`plot.TARGET_DAYS`).
