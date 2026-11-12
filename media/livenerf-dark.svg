@@ -139,15 +139,17 @@
 <text x="760.0" y="218.0" fill="#ffffff" font-size="13" font-weight="600">60.3%</text>
 <clipPath id="plotarea-dark"><rect x="64" y="92" width="868" height="236"/></clipPath>
 <g clip-path="url(#plotarea-dark)">
-<path d="M708.0,127.2 L722.0,106.8 L736.0,116.7 L736.0,171.0 L722.0,155.0 L708.0,186.5 Z" fill="#e0793a" opacity="0.12"/>
-<path d="M708.0,156.8 L722.0,130.9 L736.0,143.9" fill="none" stroke="#e0793a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M708.0,127.2 L722.0,106.8 L736.0,116.7 L750.0,113.3 L750.0,165.7 L736.0,171.0 L722.0,155.0 L708.0,186.5 Z" fill="#e0793a" opacity="0.12"/>
+<path d="M708.0,156.8 L722.0,130.9 L736.0,143.9 L750.0,139.5" fill="none" stroke="#e0793a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <line x1="708.0" y1="186.5" x2="708.0" y2="127.2" stroke="#e0793a" stroke-width="1.5" opacity="0.5"/>
 <circle cx="708.0" cy="156.8" r="3.5" fill="#e0793a" stroke="#1a1a19" stroke-width="1.5"/>
 <line x1="722.0" y1="155.0" x2="722.0" y2="106.8" stroke="#e0793a" stroke-width="1.5" opacity="0.5"/>
 <circle cx="722.0" cy="130.9" r="3.5" fill="#e0793a" stroke="#1a1a19" stroke-width="1.5"/>
 <line x1="736.0" y1="171.0" x2="736.0" y2="116.7" stroke="#e0793a" stroke-width="1.5" opacity="0.5"/>
 <circle cx="736.0" cy="143.9" r="3.5" fill="#e0793a" stroke="#1a1a19" stroke-width="1.5"/>
+<line x1="750.0" y1="165.7" x2="750.0" y2="113.3" stroke="#e0793a" stroke-width="1.5" opacity="0.5"/>
+<circle cx="750.0" cy="139.5" r="3.5" fill="#e0793a" stroke="#1a1a19" stroke-width="1.5"/>
 </g>
-<text x="746.0" y="135.9" text-anchor="start" fill="#ffffff" font-size="13" font-weight="600"><tspan fill="#e0793a">Fable 5.2</tspan> 84.6%</text>
-<text x="932" y="368" text-anchor="end" fill="#898781" font-size="11">3900 samples · updated 2026-11-12 01:25 UTC</text>
+<text x="760.0" y="131.5" text-anchor="start" fill="#ffffff" font-size="13" font-weight="600"><tspan fill="#e0793a">Fable 5.2</tspan> 85.9%</text>
+<text x="932" y="368" text-anchor="end" fill="#898781" font-size="11">3900 samples · updated 2026-11-12 17:31 UTC</text>
 </svg>
