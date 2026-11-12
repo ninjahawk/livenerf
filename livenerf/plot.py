@@ -84,8 +84,8 @@ def render(pts, base_mean, start: datetime, n_samples: int, theme: str, fable=()
     origin = start.replace(hour=0, minute=0, second=0, microsecond=0)
     t0 = origin + timedelta(hours=12)
     t1 = max(t0 + MIN_SPAN, (pts[-1][0] + timedelta(days=4)) if pts else t0)
-    lo = min([40.0] + [v - 1.96 * s for _, v, s in pts] + [v for _, v, _ in fable])
-    hi = max([80.0] + [v + 1.96 * s for _, v, s in pts] + [v for _, v, _ in fable])
+    lo = min([40.0] + [v - 1.96 * s for _, v, s in pts] + [v - 1.96 * s for _, v, s in fable])
+    hi = max([80.0] + [v + 1.96 * s for _, v, s in pts] + [v + 1.96 * s for _, v, s in fable])
     y_min, y_max = max(0, 10 * math.floor(lo / 10)), min(100, 10 * math.ceil(hi / 10))
 
     def x(t):
@@ -145,7 +145,7 @@ def render(pts, base_mean, start: datetime, n_samples: int, theme: str, fable=()
         o.append(f'<text x="{pl + pw / 2:.1f}" y="{pt + ph / 2:.1f}" text-anchor="middle" '
                  f'fill="{c["muted"]}" font-size="14">No data yet.</text>')
     if fable:
-        # Claude Fable 5.2 from its launch, same panel, plotted by UTC day like Opus; CI clipped to the plot area
+        # Claude Fable 5.2 from its launch, same panel, plotted by UTC day like Opus; the axis range includes its CI
         cid = f"plotarea-{theme}"
         o.append(f'<clipPath id="{cid}"><rect x="{pl}" y="{pt}" width="{pw}" height="{ph}"/></clipPath>')
         o.append(f'<g clip-path="url(#{cid})">')
@@ -160,14 +160,23 @@ def render(pts, base_mean, start: datetime, n_samples: int, theme: str, fable=()
                      f'stroke="{c["series2"]}" stroke-width="1.5" opacity="0.5"/>')
             o.append(f'<circle cx="{x(d):.1f}" cy="{y(v):.1f}" r="3.5" fill="{c["series2"]}" stroke="{c["surface"]}" stroke-width="1.5"/>')
         o.append("</g>")
+        # direct end label like the Opus one ("Fable 5.2 84.6%"), no legend: the top right stays as it was.
+        # Width is estimated generously (any fallback font fits), flipped left of the point if it would pass
+        # the right edge, and moved off the Opus end label if the two would overlap.
         d, v, _ = fable[-1]
-        o.append(f'<text x="{x(d) + 10:.1f}" y="{y(v) - 8:.1f}" fill="{c["ink"]}" font-size="13" font-weight="600">{v:.1f}%</text>')
-        # legend, top right
-        lx = w - pr
-        o.append(f'<text x="{lx}" y="38" text-anchor="end" fill="{c["ink2"]}" font-size="12">Fable 5.2 (from launch)</text>')
-        o.append(f'<circle cx="{lx - 130}" cy="34" r="4" fill="{c["series2"]}"/>')
-        o.append(f'<text x="{lx - 142}" y="38" text-anchor="end" fill="{c["ink2"]}" font-size="12">Opus 5.5</text>')
-        o.append(f'<circle cx="{lx - 200}" cy="34" r="4" fill="{c["series"]}"/>')
+        fx, fy = x(d) + 10, y(v) - 8
+        if fx + 130 > w - pr:
+            fx, anchor = x(d) - 10, "end"
+        else:
+            anchor = "start"
+        if pts:
+            od, ov, _ = pts[-1]
+            oy = y(ov) - 8
+            if abs(fy - oy) < 20:
+                fy = oy - 20 if v >= ov else oy + 20
+        fy = min(max(fy, pt + 14), pt + ph - 4)
+        o.append(f'<text x="{fx:.1f}" y="{fy:.1f}" text-anchor="{anchor}" fill="{c["ink"]}" font-size="13" font-weight="600">'
+                 f'<tspan fill="{c["series2"]}">Fable 5.2</tspan> {v:.1f}%</text>')
     o.append(f'<text x="{w - pr}" y="{h - 12}" text-anchor="end" fill="{c["muted"]}" font-size="11">'
              f'{n_samples} samples · updated {now:%Y-%m-%d %H:%M} UTC</text>')
     o.append("</svg>")
