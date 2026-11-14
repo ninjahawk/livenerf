@@ -123,16 +123,16 @@ uv sync
 
 This installs a pinned [Inspect](https://inspect.aisi.org.uk/) and registers the `claudecode` model provider. The provider wraps a hermetic `claude -p` call, so Inspect treats your Max subscription like any other model API.
 
-Pin the CLI. This is not optional: a Claude Code update changes the harness, and a changed harness looks exactly like a changed model. Turn off auto-updates and write down the version you're pinning:
+Pin the CLI. This is not optional: a Claude Code update changes the harness, and a changed harness looks exactly like a changed model. Write down the version you're pinning:
 
 ```bash
-export DISABLE_AUTOUPDATER=1              # also put this in ~/.claude/settings.json "env"
 claude --version | awk '{print $1}' > CLAUDE_CLI_VERSION
 ```
 
-The runner refuses to run if `claude --version` ever stops matching that file. Claude Code can update
-itself anyway, so keep a copy of the pinned binary where the updater can't reach it. livenerf uses it
-automatically (or set `LIVENERF_CLAUDE_CLI` to any path):
+The runner refuses to run if the CLI it calls ever stops matching that file. Claude Code updates
+itself, so keep a copy of the pinned binary where the updater can't reach it. livenerf uses it
+automatically (or set `LIVENERF_CLAUDE_CLI` to any path) and turns auto-updates off for its own calls,
+so your everyday `claude` can keep updating:
 
 ```bash
 mkdir -p ~/.local/share/livenerf
