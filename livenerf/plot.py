@@ -161,15 +161,24 @@ def render(pts, base_mean, start: datetime, n_samples: int, theme: str, fable=()
             o.append(f'<circle cx="{x(d):.1f}" cy="{y(v):.1f}" r="3.5" fill="{c["series2"]}" stroke="{c["surface"]}" stroke-width="1.5"/>')
         o.append("</g>")
         # direct end label like the Opus one ("Fable 5.2 84.6%"), no legend: the top right stays as it was.
-        # Width is estimated generously (any fallback font fits), flipped left of the point if it would pass
-        # the right edge, and moved off the Opus end label if the two would overlap.
+        # Width is measured from the text (~7.5 px per character at 13 px bold). The label sits right of the last
+        # point (clamped to the chart edge while it still clears the point); otherwise it is lifted above the
+        # Fable CI band (below it if there is no room on top), so it never covers Fable's own line or band.
         d, v, _ = fable[-1]
-        fx, fy = x(d) + 10, y(v) - 8
-        if fx + 130 > w - pr:
-            fx, anchor = x(d) - 10, "end"
-        else:
-            anchor = "start"
-        if pts:
+        label_w = 7.5 * len(f"Fable 5.2 {v:.1f}%")
+        edge = w - 6
+        fx, fy, anchor = x(d) + 10, y(v) - 8, "start"
+        if fx + label_w > edge and edge - label_w >= x(d) + 6:
+            fx, anchor = edge, "end"  # still entirely right of the last point: clamp to the edge, same height
+        if fx + label_w > edge and anchor == "start":
+            fx, anchor = edge, "end"
+            x_lo = edge - label_w
+            idx = [i for i, (dd, _, _) in enumerate(fable) if x(dd) >= x_lo] or [len(fable) - 1]
+            near = fable[max(0, idx[0] - 1):]  # include the point left of the label so the band segment counts
+            top = min(y(vv + 1.96 * ss) for _, vv, ss in near) - 6
+            bottom = max(y(vv - 1.96 * ss) for _, vv, ss in near) + 16
+            fy = top if top - 13 >= pt else bottom
+        elif pts:
             od, ov, _ = pts[-1]
             oy = y(ov) - 8
             if abs(fy - oy) < 20:
